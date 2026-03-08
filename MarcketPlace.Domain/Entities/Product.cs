@@ -5,7 +5,7 @@ namespace MarcketPlace.Domain.Entities
     public class Product
     {
         public int Id { get; set; }
-        public int StoreId { get; set; }
+        public int? StoreId { get; set; }
         public int CategoryId { get; set; }
 
         public string NameAr { get; set; } = default!;
@@ -22,7 +22,7 @@ namespace MarcketPlace.Domain.Entities
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
 
-        public Store Store { get; set; } = default!;
+        public Store? Store { get; set; } = default!;
         public Category Category { get; set; } = default!;
 
         public ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();

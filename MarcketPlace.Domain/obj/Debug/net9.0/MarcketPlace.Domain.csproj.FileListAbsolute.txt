@@ -10,3 +10,4 @@ C:\Users\DAFFAWI\Desktop\with-Ahmad\Backend\MarcketPlace\MarcketPlace.Domain\obj
 C:\Users\DAFFAWI\Desktop\with-Ahmad\Backend\MarcketPlace\MarcketPlace.Domain\obj\Debug\net9.0\refint\MarcketPlace.Domain.dll
 C:\Users\DAFFAWI\Desktop\with-Ahmad\Backend\MarcketPlace\MarcketPlace.Domain\obj\Debug\net9.0\MarcketPlace.Domain.pdb
 C:\Users\DAFFAWI\Desktop\with-Ahmad\Backend\MarcketPlace\MarcketPlace.Domain\obj\Debug\net9.0\ref\MarcketPlace.Domain.dll
+C:\Users\DAFFAWI\Desktop\with-Ahmad\Backend\MarcketPlace\MarcketPlace.Domain\obj\Debug\net9.0\MarcketPlace.Domain.sourcelink.json

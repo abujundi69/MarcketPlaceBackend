@@ -15,3 +15,4 @@ C:\Users\DAFFAWI\Desktop\with-Ahmad\Backend\MarcketPlace\MarcketPlace.Applicatio
 C:\Users\DAFFAWI\Desktop\with-Ahmad\Backend\MarcketPlace\MarcketPlace.Application\obj\Debug\net9.0\refint\MarcketPlace.Application.dll
 C:\Users\DAFFAWI\Desktop\with-Ahmad\Backend\MarcketPlace\MarcketPlace.Application\obj\Debug\net9.0\MarcketPlace.Application.pdb
 C:\Users\DAFFAWI\Desktop\with-Ahmad\Backend\MarcketPlace\MarcketPlace.Application\obj\Debug\net9.0\ref\MarcketPlace.Application.dll
+C:\Users\DAFFAWI\Desktop\with-Ahmad\Backend\MarcketPlace\MarcketPlace.Application\obj\Debug\net9.0\MarcketPlace.Application.sourcelink.json

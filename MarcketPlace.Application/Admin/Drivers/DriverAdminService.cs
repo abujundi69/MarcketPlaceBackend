@@ -2,6 +2,7 @@
 using MarcketPlace.Domain.Entities;
 using MarcketPlace.Domain.Enums;
 using MarcketPlace.Infrastructure.Data;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace MarcketPlace.Application.Admin.Drivers
@@ -40,11 +41,11 @@ namespace MarcketPlace.Application.Admin.Drivers
 
             foreach (var driver in drivers)
             {
-                driver.StatusText = driver.IsActive ? "Active" : "Inactive";
+                driver.StatusText = driver.IsActive ? "نشط" : "غير نشط";
                 driver.CreatedAtText = driver.CreatedAt.ToString("yyyy-MM-dd hh:mm tt");
                 driver.AverageRatingText = driver.RatingsCount > 0
                     ? $"{driver.AverageRating:0.0} / 5"
-                    : "No ratings";
+                    : "لا توجد تقييمات";
             }
 
             return drivers;
@@ -58,7 +59,7 @@ namespace MarcketPlace.Application.Admin.Drivers
                 .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
 
             if (driver is null)
-                throw new KeyNotFoundException("Driver not found.");
+                throw new KeyNotFoundException("المندوب غير موجود.");
 
             return MapToDetails(driver);
         }
@@ -74,13 +75,13 @@ namespace MarcketPlace.Application.Admin.Drivers
                 .AnyAsync(x => x.PhoneNumber == phoneNumber, cancellationToken);
 
             if (phoneExists)
-                throw new InvalidOperationException("Phone number already exists.");
+                throw new InvalidOperationException("رقم الهاتف مستخدم مسبقًا.");
 
             var vehicleExists = await _context.Drivers
                 .AnyAsync(x => x.VehicleNumber == vehicleNumber, cancellationToken);
 
             if (vehicleExists)
-                throw new InvalidOperationException("Vehicle number already exists.");
+                throw new InvalidOperationException("رقم المركبة مستخدم مسبقًا.");
 
             await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
 
@@ -92,6 +93,10 @@ namespace MarcketPlace.Application.Admin.Drivers
                 IsActive = dto.IsActive,
                 CreatedAt = DateTime.UtcNow
             };
+
+            var rawPassword = $"{phoneNumber}@@";
+            var passwordHasher = new PasswordHasher<User>();
+            user.PasswordHash = passwordHasher.HashPassword(user, rawPassword);
 
             _context.Users.Add(user);
             await _context.SaveChangesAsync(cancellationToken);
@@ -121,7 +126,7 @@ namespace MarcketPlace.Application.Admin.Drivers
                 .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
 
             if (driver is null)
-                throw new KeyNotFoundException("Driver not found.");
+                throw new KeyNotFoundException("المندوب غير موجود.");
 
             var phoneNumber = dto.PhoneNumber.Trim();
             var vehicleNumber = dto.VehicleNumber.Trim();
@@ -130,13 +135,13 @@ namespace MarcketPlace.Application.Admin.Drivers
                 .AnyAsync(x => x.PhoneNumber == phoneNumber && x.Id != driver.UserId, cancellationToken);
 
             if (phoneExists)
-                throw new InvalidOperationException("Phone number already exists.");
+                throw new InvalidOperationException("رقم الهاتف مستخدم مسبقًا.");
 
             var vehicleExists = await _context.Drivers
                 .AnyAsync(x => x.VehicleNumber == vehicleNumber && x.Id != driver.Id, cancellationToken);
 
             if (vehicleExists)
-                throw new InvalidOperationException("Vehicle number already exists.");
+                throw new InvalidOperationException("رقم المركبة مستخدم مسبقًا.");
 
             driver.User.FullName = dto.FullName.Trim();
             driver.User.PhoneNumber = phoneNumber;
@@ -158,7 +163,7 @@ namespace MarcketPlace.Application.Admin.Drivers
                 .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
 
             if (driver is null)
-                throw new KeyNotFoundException("Driver not found.");
+                throw new KeyNotFoundException("المندوب غير موجود.");
 
             driver.User.IsActive = dto.IsActive;
             driver.User.UpdatedAt = DateTime.UtcNow;
@@ -175,16 +180,16 @@ namespace MarcketPlace.Application.Admin.Drivers
             string vehicleNumber)
         {
             if (string.IsNullOrWhiteSpace(fullName))
-                throw new InvalidOperationException("Full name is required.");
+                throw new InvalidOperationException("اسم المندوب مطلوب.");
 
             if (string.IsNullOrWhiteSpace(phoneNumber))
-                throw new InvalidOperationException("Phone number is required.");
+                throw new InvalidOperationException("رقم هاتف المندوب مطلوب.");
 
             if (string.IsNullOrWhiteSpace(vehicleType))
-                throw new InvalidOperationException("Vehicle type is required.");
+                throw new InvalidOperationException("نوع المركبة مطلوب.");
 
             if (string.IsNullOrWhiteSpace(vehicleNumber))
-                throw new InvalidOperationException("Vehicle number is required.");
+                throw new InvalidOperationException("رقم المركبة مطلوب.");
         }
 
         private static DriverDetailsDto MapToDetails(Driver driver)
@@ -198,7 +203,7 @@ namespace MarcketPlace.Application.Admin.Drivers
                 VehicleType = driver.VehicleType,
                 VehicleNumber = driver.VehicleNumber,
                 IsActive = driver.User.IsActive,
-                StatusText = driver.User.IsActive ? "Active" : "Inactive",
+                StatusText = driver.User.IsActive ? "نشط" : "غير نشط",
                 CreatedAt = driver.CreatedAt,
                 UpdatedAt = driver.User.UpdatedAt,
                 CreatedAtText = driver.CreatedAt.ToString("yyyy-MM-dd hh:mm tt"),

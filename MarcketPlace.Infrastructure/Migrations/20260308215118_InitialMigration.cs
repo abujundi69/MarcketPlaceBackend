@@ -77,9 +77,9 @@ namespace MarcketPlace.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     SystemNameAr = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     SystemNameEn = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    FooterAr = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
-                    FooterEn = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
-                    LogoUrl = table.Column<string>(type: "varchar(1000)", unicode: false, maxLength: 1000, nullable: true),
+                    FooterAr = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    FooterEn = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    Logo = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "SYSUTCDATETIME()")
                 },
                 constraints: table =>
@@ -95,6 +95,7 @@ namespace MarcketPlace.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     FullName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     PhoneNumber = table.Column<string>(type: "varchar(20)", unicode: false, maxLength: 20, nullable: false),
+                    PasswordHash = table.Column<string>(type: "varchar(500)", unicode: false, maxLength: 500, nullable: false),
                     Role = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "SYSUTCDATETIME()"),
@@ -199,6 +200,7 @@ namespace MarcketPlace.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    OrderNumber = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
                     CustomerId = table.Column<int>(type: "int", nullable: false),
                     DriverId = table.Column<int>(type: "int", nullable: true),
                     DeliveryZoneId = table.Column<int>(type: "int", nullable: false),
@@ -352,7 +354,7 @@ namespace MarcketPlace.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    StoreId = table.Column<int>(type: "int", nullable: false),
+                    StoreId = table.Column<int>(type: "int", nullable: true),
                     CategoryId = table.Column<int>(type: "int", nullable: false),
                     NameAr = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     NameEn = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
@@ -506,6 +508,59 @@ namespace MarcketPlace.Infrastructure.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "ProductRequests",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    VendorId = table.Column<int>(type: "int", nullable: false),
+                    StoreId = table.Column<int>(type: "int", nullable: false),
+                    CategoryId = table.Column<int>(type: "int", nullable: false),
+                    NameAr = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    NameEn = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    DescriptionAr = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    DescriptionEn = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    ImageUrl = table.Column<string>(type: "varchar(1000)", unicode: false, maxLength: 1000, nullable: true),
+                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    StockQuantity = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
+                    MinStockQuantity = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
+                    Status = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    AdminNote = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    RequestedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "SYSUTCDATETIME()"),
+                    ReviewedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ReviewedByUserId = table.Column<int>(type: "int", nullable: true),
+                    ProductId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductRequests", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ProductRequests_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ProductRequests_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ProductRequests_Stores_StoreId",
+                        column: x => x.StoreId,
+                        principalTable: "Stores",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ProductRequests_Vendors_VendorId",
+                        column: x => x.VendorId,
+                        principalTable: "Vendors",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_CartItems_CustomerId_ProductId",
                 table: "CartItems",
@@ -586,6 +641,12 @@ namespace MarcketPlace.Infrastructure.Migrations
                 column: "DriverId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Orders_OrderNumber",
+                table: "Orders",
+                column: "OrderNumber",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_OrderStores_OrderId_StoreId",
                 table: "OrderStores",
                 columns: new[] { "OrderId", "StoreId" },
@@ -600,6 +661,26 @@ namespace MarcketPlace.Infrastructure.Migrations
                 name: "IX_OtpCodes_PhoneNumber",
                 table: "OtpCodes",
                 column: "PhoneNumber");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductRequests_CategoryId",
+                table: "ProductRequests",
+                column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductRequests_ProductId",
+                table: "ProductRequests",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductRequests_StoreId",
+                table: "ProductRequests",
+                column: "StoreId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductRequests_VendorId",
+                table: "ProductRequests",
+                column: "VendorId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_CategoryId",
@@ -668,6 +749,9 @@ namespace MarcketPlace.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "OtpCodes");
+
+            migrationBuilder.DropTable(
+                name: "ProductRequests");
 
             migrationBuilder.DropTable(
                 name: "StoreRatings");

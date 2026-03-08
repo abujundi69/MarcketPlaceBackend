@@ -187,3 +187,4 @@ C:\Users\DAFFAWI\Desktop\with-Ahmad\Backend\MarcketPlace\MarcketPlace\obj\Debug\
 C:\Users\DAFFAWI\Desktop\with-Ahmad\Backend\MarcketPlace\MarcketPlace\obj\Debug\net9.0\MarcketPlace.API.pdb
 C:\Users\DAFFAWI\Desktop\with-Ahmad\Backend\MarcketPlace\MarcketPlace\obj\Debug\net9.0\MarcketPlace.API.genruntimeconfig.cache
 C:\Users\DAFFAWI\Desktop\with-Ahmad\Backend\MarcketPlace\MarcketPlace\obj\Debug\net9.0\ref\MarcketPlace.API.dll
+C:\Users\DAFFAWI\Desktop\with-Ahmad\Backend\MarcketPlace\MarcketPlace\obj\Debug\net9.0\MarcketPlace.API.sourcelink.json

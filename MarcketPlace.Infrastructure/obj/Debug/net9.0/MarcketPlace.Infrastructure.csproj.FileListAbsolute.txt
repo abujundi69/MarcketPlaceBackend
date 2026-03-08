@@ -15,3 +15,4 @@ C:\Users\DAFFAWI\Desktop\with-Ahmad\Backend\MarcketPlace\MarcketPlace.Infrastruc
 C:\Users\DAFFAWI\Desktop\with-Ahmad\Backend\MarcketPlace\MarcketPlace.Infrastructure\obj\Debug\net9.0\MarcketPlace.Infrastructure.pdb
 C:\Users\DAFFAWI\Desktop\with-Ahmad\Backend\MarcketPlace\MarcketPlace.Infrastructure\obj\Debug\net9.0\MarcketPlace.Infrastructure.genruntimeconfig.cache
 C:\Users\DAFFAWI\Desktop\with-Ahmad\Backend\MarcketPlace\MarcketPlace.Infrastructure\obj\Debug\net9.0\ref\MarcketPlace.Infrastructure.dll
+C:\Users\DAFFAWI\Desktop\with-Ahmad\Backend\MarcketPlace\MarcketPlace.Infrastructure\obj\Debug\net9.0\MarcketPlace.Infrastructure.sourcelink.json

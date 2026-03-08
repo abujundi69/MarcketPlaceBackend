@@ -1,4 +1,5 @@
-﻿using MarcketPlace.Domain.Enums;
+﻿using System.Text.Json.Serialization;
+using MarcketPlace.Domain.Enums;
 
 namespace MarcketPlace.Domain.Entities
 {
@@ -7,6 +8,10 @@ namespace MarcketPlace.Domain.Entities
         public int Id { get; set; }
         public string FullName { get; set; } = default!;
         public string PhoneNumber { get; set; } = default!;
+
+        [JsonIgnore]
+        public string PasswordHash { get; set; } = default!;
+
         public UserRole Role { get; set; }
         public bool IsActive { get; set; }
 

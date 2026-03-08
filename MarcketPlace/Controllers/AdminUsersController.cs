@@ -32,6 +32,16 @@ namespace MarcketPlace.Controllers
             var result = await _userService.GetAllAsync(cancellationToken);
             return Ok(result);
         }
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<UserListItemDto>> GetUserById(int id, CancellationToken cancellationToken)
+        {
+            var user = await _userService.GetByIdAsync(id, cancellationToken);
+
+            if (user is null)
+                return NotFound(new { message = $"User with id {id} was not found." });
+
+            return Ok(user);
+        }
 
         [HttpGet("drivers")]
         public async Task<ActionResult<IReadOnlyList<DriverListItemDto>>> GetAllDrivers(CancellationToken cancellationToken)
@@ -107,6 +117,15 @@ namespace MarcketPlace.Controllers
         {
             var result = await _vendorAdminService.UpdateAsync(id, dto, cancellationToken);
             return Ok(result);
+        }
+        [HttpPut("{id:int}/change-password")]
+        public async Task<IActionResult> ChangeUserPassword(
+           int id,
+           [FromBody] AdminChangeUserPasswordDto dto,
+           CancellationToken cancellationToken)
+        {
+            await _userService.ChangePasswordByAdminAsync(id, dto, cancellationToken);
+            return Ok(new { message = "تم تغيير كلمة السر بنجاح." });
         }
     }
 }

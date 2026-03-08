@@ -21,6 +21,11 @@ namespace MarcketPlace.Infrastructure.Data.Config
                    .IsUnicode(false)
                    .IsRequired();
 
+            builder.Property(x => x.PasswordHash)
+                   .HasMaxLength(500)
+                   .IsUnicode(false)
+                   .IsRequired();
+
             builder.Property(x => x.Role)
                    .HasConversion<string>()
                    .HasMaxLength(20)
