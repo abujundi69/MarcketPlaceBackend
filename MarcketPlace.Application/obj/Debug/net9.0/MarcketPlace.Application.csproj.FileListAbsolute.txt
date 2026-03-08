@@ -1,0 +1,17 @@
+C:\Users\DAFFAWI\Desktop\with-Ahmad\Backend\MarcketPlace\MarcketPlace.Application\bin\Debug\net9.0\MarcketPlace.Application.deps.json
+C:\Users\DAFFAWI\Desktop\with-Ahmad\Backend\MarcketPlace\MarcketPlace.Application\bin\Debug\net9.0\MarcketPlace.Application.dll
+C:\Users\DAFFAWI\Desktop\with-Ahmad\Backend\MarcketPlace\MarcketPlace.Application\bin\Debug\net9.0\MarcketPlace.Application.pdb
+C:\Users\DAFFAWI\Desktop\with-Ahmad\Backend\MarcketPlace\MarcketPlace.Application\bin\Debug\net9.0\MarcketPlace.Domain.dll
+C:\Users\DAFFAWI\Desktop\with-Ahmad\Backend\MarcketPlace\MarcketPlace.Application\bin\Debug\net9.0\MarcketPlace.Infrastructure.dll
+C:\Users\DAFFAWI\Desktop\with-Ahmad\Backend\MarcketPlace\MarcketPlace.Application\bin\Debug\net9.0\MarcketPlace.Domain.pdb
+C:\Users\DAFFAWI\Desktop\with-Ahmad\Backend\MarcketPlace\MarcketPlace.Application\bin\Debug\net9.0\MarcketPlace.Infrastructure.pdb
+C:\Users\DAFFAWI\Desktop\with-Ahmad\Backend\MarcketPlace\MarcketPlace.Application\obj\Debug\net9.0\MarcketPlace.Application.csproj.AssemblyReference.cache
+C:\Users\DAFFAWI\Desktop\with-Ahmad\Backend\MarcketPlace\MarcketPlace.Application\obj\Debug\net9.0\MarcketPlace.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\DAFFAWI\Desktop\with-Ahmad\Backend\MarcketPlace\MarcketPlace.Application\obj\Debug\net9.0\MarcketPlace.Application.AssemblyInfoInputs.cache
+C:\Users\DAFFAWI\Desktop\with-Ahmad\Backend\MarcketPlace\MarcketPlace.Application\obj\Debug\net9.0\MarcketPlace.Application.AssemblyInfo.cs
+C:\Users\DAFFAWI\Desktop\with-Ahmad\Backend\MarcketPlace\MarcketPlace.Application\obj\Debug\net9.0\MarcketPlace.Application.csproj.CoreCompileInputs.cache
+C:\Users\DAFFAWI\Desktop\with-Ahmad\Backend\MarcketPlace\MarcketPlace.Application\obj\Debug\net9.0\MarcketP.9B3D4159.Up2Date
+C:\Users\DAFFAWI\Desktop\with-Ahmad\Backend\MarcketPlace\MarcketPlace.Application\obj\Debug\net9.0\MarcketPlace.Application.dll
+C:\Users\DAFFAWI\Desktop\with-Ahmad\Backend\MarcketPlace\MarcketPlace.Application\obj\Debug\net9.0\refint\MarcketPlace.Application.dll
+C:\Users\DAFFAWI\Desktop\with-Ahmad\Backend\MarcketPlace\MarcketPlace.Application\obj\Debug\net9.0\MarcketPlace.Application.pdb
+C:\Users\DAFFAWI\Desktop\with-Ahmad\Backend\MarcketPlace\MarcketPlace.Application\obj\Debug\net9.0\ref\MarcketPlace.Application.dll
