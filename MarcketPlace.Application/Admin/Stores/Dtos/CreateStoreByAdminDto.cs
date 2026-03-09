@@ -27,5 +27,8 @@ namespace MarcketPlace.Application.Admin.Stores.Dtos
         public decimal Longitude { get; set; }
 
         public bool IsActive { get; set; } = true;
+
+        [Range(1, int.MaxValue)]
+        public int? VendorId { get; set; }
     }
 }

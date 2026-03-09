@@ -948,6 +948,18 @@ namespace MarcketPlace.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("Users", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedAt = new DateTime(2026, 3, 9, 0, 0, 0, 0, DateTimeKind.Utc),
+                            FullName = "Super Admin",
+                            IsActive = true,
+                            PasswordHash = "AQAAAAIAAYagAAAAEAARIjNEVWZ3iJmqu8zd7v9/ZpZ17wzvNtmMEZEJm816r8vP72BtUCc6/zuVpvvZPg==",
+                            PhoneNumber = "0599000000",
+                            Role = "SuperAdmin"
+                        });
                 });
 
             modelBuilder.Entity("MarcketPlace.Domain.Entities.Vendor", b =>

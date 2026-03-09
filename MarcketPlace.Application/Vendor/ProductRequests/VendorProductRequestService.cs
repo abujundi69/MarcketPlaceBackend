@@ -15,7 +15,10 @@ namespace MarcketPlace.Application.Vendor.ProductRequests
             _context = context;
         }
 
-        public async Task<VendorProductRequestDto> CreateAsync(int vendorId, CreateVendorProductRequestDto dto, CancellationToken cancellationToken = default)
+        public async Task<VendorProductRequestDto> CreateAsync(
+            int vendorId,
+            CreateVendorProductRequestDto dto,
+            CancellationToken cancellationToken = default)
         {
             var vendor = await _context.Vendors
                 .AsNoTracking()
@@ -106,7 +109,18 @@ namespace MarcketPlace.Application.Vendor.ProductRequests
             return MapToDto(request);
         }
 
-        public async Task<IReadOnlyList<VendorProductRequestDto>> GetMyRequestsAsync(int vendorId, CancellationToken cancellationToken = default)
+        public async Task<VendorProductRequestDto> CreateByUserAsync(
+            int userId,
+            CreateVendorProductRequestDto dto,
+            CancellationToken cancellationToken = default)
+        {
+            var vendorId = await GetVendorIdByUserIdAsync(userId, cancellationToken);
+            return await CreateAsync(vendorId, dto, cancellationToken);
+        }
+
+        public async Task<IReadOnlyList<VendorProductRequestDto>> GetMyRequestsAsync(
+            int vendorId,
+            CancellationToken cancellationToken = default)
         {
             return await _context.ProductRequests
                 .AsNoTracking()
@@ -130,6 +144,30 @@ namespace MarcketPlace.Application.Vendor.ProductRequests
                     ProductId = x.ProductId
                 })
                 .ToListAsync(cancellationToken);
+        }
+
+        public async Task<IReadOnlyList<VendorProductRequestDto>> GetMyRequestsByUserAsync(
+            int userId,
+            CancellationToken cancellationToken = default)
+        {
+            var vendorId = await GetVendorIdByUserIdAsync(userId, cancellationToken);
+            return await GetMyRequestsAsync(vendorId, cancellationToken);
+        }
+
+        private async Task<int> GetVendorIdByUserIdAsync(
+            int userId,
+            CancellationToken cancellationToken)
+        {
+            var vendorId = await _context.Vendors
+                .AsNoTracking()
+                .Where(x => x.UserId == userId)
+                .Select(x => (int?)x.Id)
+                .FirstOrDefaultAsync(cancellationToken);
+
+            if (vendorId is null)
+                throw new Exception("المستخدم الحالي لا يملك حساب تاجر.");
+
+            return vendorId.Value;
         }
 
         private static VendorProductRequestDto MapToDto(ProductRequest request)

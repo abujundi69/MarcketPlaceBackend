@@ -22,8 +22,30 @@ namespace MarcketPlace.Application.Admin.Stores
             var nameEn = dto.NameEn.Trim();
             var phoneNumber = dto.PhoneNumber.Trim();
             var addressText = dto.AddressText.Trim();
+            var vendorId = dto.VendorId;
 
             ValidateStoreData(nameAr, nameEn, phoneNumber, addressText, dto.Latitude, dto.Longitude);
+
+            if (vendorId.HasValue)
+            {
+                if (vendorId.Value <= 0)
+                    throw new InvalidOperationException("معرّف التاجر غير صالح.");
+
+                var vendorExists = await _context.Vendors
+                    .AsNoTracking()
+                    .AnyAsync(x => x.Id == vendorId.Value, cancellationToken);
+
+                if (!vendorExists)
+                    throw new InvalidOperationException("التاجر غير موجود.");
+
+                // Existing admin linking flow keeps a single store linked to one vendor at a time.
+                var vendorAlreadyHasStore = await _context.Stores
+                    .AsNoTracking()
+                    .AnyAsync(x => x.VendorId == vendorId.Value, cancellationToken);
+
+                if (vendorAlreadyHasStore)
+                    throw new InvalidOperationException("هذا التاجر مرتبط بالفعل بمتجر.");
+            }
 
             var store = new Store
             {
@@ -37,7 +59,7 @@ namespace MarcketPlace.Application.Admin.Stores
                 Longitude = dto.Longitude,
                 IsActive = dto.IsActive,
                 CreatedAt = DateTime.UtcNow,
-                VendorId = null
+                VendorId = vendorId
             };
 
             _context.Stores.Add(store);

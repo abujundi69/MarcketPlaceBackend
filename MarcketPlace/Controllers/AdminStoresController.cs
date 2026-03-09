@@ -1,11 +1,14 @@
 ﻿using MarcketPlace.Application.Admin.Stores;
 using MarcketPlace.Application.Admin.Stores.Dtos;
+using MarcketPlace.Domain.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MarcketPlace.Controllers
 {
     [ApiController]
     [Route("api/admin/stores")]
+    [Authorize(Roles = nameof(UserRole.SuperAdmin))]
     public class AdminStoresController : ControllerBase
     {
         private readonly IStoreAdminService _storeAdminService;

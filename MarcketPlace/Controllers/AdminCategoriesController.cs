@@ -1,11 +1,14 @@
 ﻿using MarcketPlace.Application.Admin.Categories;
 using MarcketPlace.Application.Admin.Categories.Dtos;
+using MarcketPlace.Domain.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MarcketPlace.Controllers
 {
     [ApiController]
     [Route("api/admin/categories")]
+    [Authorize(Roles = nameof(UserRole.SuperAdmin))]
     public class AdminCategoriesController : ControllerBase
     {
         private readonly ICategoryAdminService _categoryAdminService;

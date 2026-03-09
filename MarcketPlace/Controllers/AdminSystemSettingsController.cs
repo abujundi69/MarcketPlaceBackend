@@ -1,11 +1,14 @@
 ﻿using MarcketPlace.Application.Admin.SystemSettings;
 using MarcketPlace.Application.Admin.SystemSettings.Dtos;
+using MarcketPlace.Domain.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MarcketPlace.Controllers
 {
     [ApiController]
     [Route("api/admin/system-settings")]
+    [Authorize(Roles = nameof(UserRole.SuperAdmin))]
     public class AdminSystemSettingsController : ControllerBase
     {
         private readonly ISystemSettingAdminService _service;

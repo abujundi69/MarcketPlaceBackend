@@ -561,6 +561,11 @@ namespace MarcketPlace.Infrastructure.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
+            migrationBuilder.InsertData(
+                table: "Users",
+                columns: new[] { "Id", "CreatedAt", "FullName", "IsActive", "PasswordHash", "PhoneNumber", "Role", "UpdatedAt" },
+                values: new object[] { 1, new DateTime(2026, 3, 9, 0, 0, 0, 0, DateTimeKind.Utc), "Super Admin", true, "AQAAAAIAAYagAAAAEAARIjNEVWZ3iJmqu8zd7v9/ZpZ17wzvNtmMEZEJm816r8vP72BtUCc6/zuVpvvZPg==", "0599000000", "SuperAdmin", null });
+
             migrationBuilder.CreateIndex(
                 name: "IX_CartItems_CustomerId_ProductId",
                 table: "CartItems",

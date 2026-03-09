@@ -1,29 +1,37 @@
-﻿using MarcketPlace.Application.Admin.Drivers;
+﻿using MarcketPlace.Application.Admin.Customers;
+using MarcketPlace.Application.Admin.Customers.Dtos;
+using MarcketPlace.Application.Admin.Drivers;
 using MarcketPlace.Application.Admin.Drivers.Dtos;
 using MarcketPlace.Application.Admin.Vendors;
 using MarcketPlace.Application.Admin.Vendors.Dtos;
 using MarcketPlace.Application.Users;
 using MarcketPlace.Application.Users.Dtos;
+using MarcketPlace.Domain.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MarcketPlace.Controllers
 {
     [ApiController]
     [Route("api/admin/users")]
+    [Authorize(Roles = nameof(UserRole.SuperAdmin))]
     public class AdminUsersController : ControllerBase
     {
         private readonly IUserService _userService;
         private readonly IDriverAdminService _driverAdminService;
         private readonly IVendorAdminService _vendorAdminService;
+        private readonly ICustomerAdminService _customerAdminService;
 
         public AdminUsersController(
             IUserService userService,
             IDriverAdminService driverAdminService,
-            IVendorAdminService vendorAdminService)
+            IVendorAdminService vendorAdminService,
+            ICustomerAdminService customerAdminService)
         {
             _userService = userService;
             _driverAdminService = driverAdminService;
             _vendorAdminService = vendorAdminService;
+            _customerAdminService = customerAdminService;
         }
 
         [HttpGet]
@@ -32,6 +40,7 @@ namespace MarcketPlace.Controllers
             var result = await _userService.GetAllAsync(cancellationToken);
             return Ok(result);
         }
+
         [HttpGet("{id:int}")]
         public async Task<ActionResult<UserListItemDto>> GetUserById(int id, CancellationToken cancellationToken)
         {
@@ -111,18 +120,62 @@ namespace MarcketPlace.Controllers
 
         [HttpPut("vendors/{id:int}")]
         public async Task<ActionResult<VendorAdminDetailsDto>> UpdateVendor(
-        int id,
-        [FromBody] UpdateVendorByAdminDto dto,
-        CancellationToken cancellationToken)
+            int id,
+            [FromBody] UpdateVendorByAdminDto dto,
+            CancellationToken cancellationToken)
         {
             var result = await _vendorAdminService.UpdateAsync(id, dto, cancellationToken);
             return Ok(result);
         }
+
+        [HttpGet("customers")]
+        public async Task<ActionResult<IReadOnlyList<CustomerListItemDto>>> GetAllCustomers(CancellationToken cancellationToken)
+        {
+            var result = await _customerAdminService.GetAllAsync(cancellationToken);
+            return Ok(result);
+        }
+
+        [HttpGet("customers/{id:int}")]
+        public async Task<ActionResult<CustomerDetailsDto>> GetCustomerById(int id, CancellationToken cancellationToken)
+        {
+            var result = await _customerAdminService.GetByIdAsync(id, cancellationToken);
+            return Ok(result);
+        }
+
+        [HttpPost("customers")]
+        public async Task<ActionResult<CustomerDetailsDto>> CreateCustomer(
+            [FromBody] CreateCustomerDto dto,
+            CancellationToken cancellationToken)
+        {
+            var result = await _customerAdminService.CreateAsync(dto, cancellationToken);
+            return CreatedAtAction(nameof(GetCustomerById), new { id = result.Id }, result);
+        }
+
+        [HttpPut("customers/{id:int}")]
+        public async Task<ActionResult<CustomerDetailsDto>> UpdateCustomer(
+            int id,
+            [FromBody] UpdateCustomerDto dto,
+            CancellationToken cancellationToken)
+        {
+            var result = await _customerAdminService.UpdateAsync(id, dto, cancellationToken);
+            return Ok(result);
+        }
+
+        [HttpPatch("customers/{id:int}/status")]
+        public async Task<ActionResult<CustomerDetailsDto>> UpdateCustomerStatus(
+            int id,
+            [FromBody] UpdateCustomerStatusDto dto,
+            CancellationToken cancellationToken)
+        {
+            var result = await _customerAdminService.UpdateStatusAsync(id, dto, cancellationToken);
+            return Ok(result);
+        }
+
         [HttpPut("{id:int}/change-password")]
         public async Task<IActionResult> ChangeUserPassword(
-           int id,
-           [FromBody] AdminChangeUserPasswordDto dto,
-           CancellationToken cancellationToken)
+            int id,
+            [FromBody] AdminChangeUserPasswordDto dto,
+            CancellationToken cancellationToken)
         {
             await _userService.ChangePasswordByAdminAsync(id, dto, cancellationToken);
             return Ok(new { message = "تم تغيير كلمة السر بنجاح." });

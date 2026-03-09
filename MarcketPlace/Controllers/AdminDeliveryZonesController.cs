@@ -1,11 +1,14 @@
 ﻿using MarcketPlace.Application.Admin.DeliveryZones;
 using MarcketPlace.Application.Admin.DeliveryZones.Dtos;
+using MarcketPlace.Domain.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MarcketPlace.Controllers
 {
     [ApiController]
     [Route("api/admin/delivery-zones")]
+    [Authorize(Roles = nameof(UserRole.SuperAdmin))]
     public class AdminDeliveryZonesController : ControllerBase
     {
         private readonly IDeliveryZoneAdminService _service;

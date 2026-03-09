@@ -659,6 +659,140 @@
   },
   {
     "ContainingType": "MarcketPlace.Controllers.AdminUsersController",
+    "Method": "GetAllCustomers",
+    "RelativePath": "api/admin/users/customers",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IReadOnlyList\u00601[[MarcketPlace.Application.Admin.Customers.Dtos.CustomerListItemDto, MarcketPlace.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MarcketPlace.Controllers.AdminUsersController",
+    "Method": "CreateCustomer",
+    "RelativePath": "api/admin/users/customers",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "MarcketPlace.Application.Admin.Customers.Dtos.CreateCustomerDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MarcketPlace.Application.Admin.Customers.Dtos.CustomerDetailsDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MarcketPlace.Controllers.AdminUsersController",
+    "Method": "GetCustomerById",
+    "RelativePath": "api/admin/users/customers/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MarcketPlace.Application.Admin.Customers.Dtos.CustomerDetailsDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MarcketPlace.Controllers.AdminUsersController",
+    "Method": "UpdateCustomer",
+    "RelativePath": "api/admin/users/customers/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "dto",
+        "Type": "MarcketPlace.Application.Admin.Customers.Dtos.UpdateCustomerDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MarcketPlace.Application.Admin.Customers.Dtos.CustomerDetailsDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MarcketPlace.Controllers.AdminUsersController",
+    "Method": "UpdateCustomerStatus",
+    "RelativePath": "api/admin/users/customers/{id}/status",
+    "HttpMethod": "PATCH",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "dto",
+        "Type": "MarcketPlace.Application.Admin.Customers.Dtos.UpdateCustomerStatusDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MarcketPlace.Application.Admin.Customers.Dtos.CustomerDetailsDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MarcketPlace.Controllers.AdminUsersController",
     "Method": "GetAllDrivers",
     "RelativePath": "api/admin/users/drivers",
     "HttpMethod": "GET",
@@ -895,6 +1029,32 @@
     ]
   },
   {
+    "ContainingType": "MarcketPlace.Controllers.AuthController",
+    "Method": "Login",
+    "RelativePath": "api/auth/login",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "MarcketPlace.Application.Auth.Dtos.LoginRequestDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MarcketPlace.Application.Auth.Dtos.AuthResponseDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
     "ContainingType": "MarcketPlace.Controllers.CustomerOrdersController",
     "Method": "Checkout",
     "RelativePath": "api/customer/orders/checkout",
@@ -921,6 +1081,63 @@
     ]
   },
   {
+    "ContainingType": "MarcketPlace.Controllers.CustomerOrdersController",
+    "Method": "CreateFromCart",
+    "RelativePath": "api/customer/orders/from-cart",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "MarcketPlace.Application.Customer.Orders.Dtos.CreateCustomerOrderFromCartDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MarcketPlace.Application.Customer.Orders.Dtos.CustomerCreatedOrderDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MarcketPlace.Controllers.CustomerStoreCatalogController",
+    "Method": "GetStoreProducts",
+    "RelativePath": "api/customer/stores/{storeId}/products",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "storeId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "categoryId",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IReadOnlyList\u00601[[MarcketPlace.Application.Customer.Stores.Dtos.CustomerStoreProductDto, MarcketPlace.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
     "ContainingType": "MarcketPlace.Controllers.VendorProductRequestsController",
     "Method": "Create",
     "RelativePath": "api/vendor/product-requests",
@@ -928,11 +1145,6 @@
     "IsController": true,
     "Order": 0,
     "Parameters": [
-      {
-        "Name": "vendorId",
-        "Type": "System.Int32",
-        "IsRequired": false
-      },
       {
         "Name": "dto",
         "Type": "MarcketPlace.Application.Vendor.ProductRequests.Dtos.CreateVendorProductRequestDto",
@@ -958,16 +1170,195 @@
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IReadOnlyList\u00601[[MarcketPlace.Application.Vendor.ProductRequests.Dtos.VendorProductRequestDto, MarcketPlace.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MarcketPlace.Controllers.VendorProductsController",
+    "Method": "GetMyProducts",
+    "RelativePath": "api/vendor/products",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IReadOnlyList\u00601[[MarcketPlace.Application.Vendor.Products.Dtos.VendorProductDto, MarcketPlace.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MarcketPlace.Controllers.VendorProductsController",
+    "Method": "GetById",
+    "RelativePath": "api/vendor/products/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
     "Parameters": [
       {
-        "Name": "vendorId",
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MarcketPlace.Application.Vendor.Products.Dtos.VendorProductDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MarcketPlace.Controllers.VendorProductsController",
+    "Method": "Update",
+    "RelativePath": "api/vendor/products/{productId}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "productId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "dto",
+        "Type": "MarcketPlace.Application.Vendor.Products.Dtos.UpdateVendorProductDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MarcketPlace.Application.Vendor.Products.Dtos.VendorProductDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MarcketPlace.Controllers.VendorStoreOrdersController",
+    "Method": "GetStoreOrders",
+    "RelativePath": "api/vendor/stores/{storeId}/orders",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "storeId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "vendorUserId",
         "Type": "System.Int32",
         "IsRequired": false
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IReadOnlyList\u00601[[MarcketPlace.Application.Vendor.ProductRequests.Dtos.VendorProductRequestDto, MarcketPlace.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.IReadOnlyList\u00601[[MarcketPlace.Application.Vendor.Orders.Dtos.VendorStoreOrderListItemDto, MarcketPlace.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MarcketPlace.Controllers.VendorStoreOrdersController",
+    "Method": "GetStoreOrderDetails",
+    "RelativePath": "api/vendor/stores/{storeId}/orders/{orderStoreId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "storeId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "orderStoreId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "vendorUserId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MarcketPlace.Application.Vendor.Orders.Dtos.VendorStoreOrderDetailsDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MarcketPlace.Controllers.VendorStoreOrdersController",
+    "Method": "UpdateStoreOrderStatus",
+    "RelativePath": "api/vendor/stores/{storeId}/orders/{orderStoreId}/status",
+    "HttpMethod": "PATCH",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "storeId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "orderStoreId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "vendorUserId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "dto",
+        "Type": "MarcketPlace.Application.Vendor.Orders.Dtos.UpdateVendorStoreOrderStatusDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MarcketPlace.Application.Vendor.Orders.Dtos.VendorStoreOrderDetailsDto",
         "MediaTypes": [
           "text/plain",
           "application/json",

@@ -1,11 +1,14 @@
 ﻿using MarcketPlace.Application.Admin.Products;
 using MarcketPlace.Application.Admin.Products.Dtos;
+using MarcketPlace.Domain.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MarcketPlace.Controllers
 {
     [ApiController]
     [Route("api/admin/products")]
+    [Authorize(Roles = nameof(UserRole.SuperAdmin))]
     public class AdminProductsController : ControllerBase
     {
         private readonly IProductAdminService _productAdminService;

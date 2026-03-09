@@ -1,4 +1,5 @@
 ﻿using MarcketPlace.Domain.Entities;
+using MarcketPlace.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -46,6 +47,18 @@ namespace MarcketPlace.Infrastructure.Data.Config
 
             builder.HasIndex(x => x.PhoneNumber)
                    .IsUnique();
+
+            builder.HasData(new User
+            {
+                Id = 1,
+                FullName = "Super Admin",
+                PhoneNumber = "0599000000",
+                PasswordHash = "AQAAAAIAAYagAAAAEAARIjNEVWZ3iJmqu8zd7v9/ZpZ17wzvNtmMEZEJm816r8vP72BtUCc6/zuVpvvZPg==",
+                Role = UserRole.SuperAdmin,
+                IsActive = true,
+                CreatedAt = new DateTime(2026, 3, 9, 0, 0, 0, DateTimeKind.Utc),
+                UpdatedAt = null
+            });
 
             builder.ToTable("Users");
         }
