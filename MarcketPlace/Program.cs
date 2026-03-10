@@ -112,7 +112,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors("AllowLocalhost");
-
 app.UseHttpsRedirection();
 
 app.UseAuthentication();

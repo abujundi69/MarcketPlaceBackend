@@ -1,4 +1,5 @@
-﻿using MarcketPlace.Application.Vendor.ProductRequests.Dtos;
+using MarcketPlace.Application.Admin.Notifications;
+using MarcketPlace.Application.Vendor.ProductRequests.Dtos;
 using MarcketPlace.Domain.Entities;
 using MarcketPlace.Domain.Enums;
 using MarcketPlace.Infrastructure.Data;
@@ -9,10 +10,12 @@ namespace MarcketPlace.Application.Vendor.ProductRequests
     public class VendorProductRequestService : IVendorProductRequestService
     {
         private readonly AppDbContext _context;
+        private readonly IAdminNotificationService _notificationService;
 
-        public VendorProductRequestService(AppDbContext context)
+        public VendorProductRequestService(AppDbContext context, IAdminNotificationService notificationService)
         {
             _context = context;
+            _notificationService = notificationService;
         }
 
         public async Task<VendorProductRequestDto> CreateAsync(
@@ -105,6 +108,13 @@ namespace MarcketPlace.Application.Vendor.ProductRequests
 
             _context.ProductRequests.Add(request);
             await _context.SaveChangesAsync(cancellationToken);
+
+            await _notificationService.CreateProductRequestNotificationAsync(
+                request.Id,
+                nameAr,
+                store.NameAr,
+                category.NameAr,
+                cancellationToken);
 
             return MapToDto(request);
         }

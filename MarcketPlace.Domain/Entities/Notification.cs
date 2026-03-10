@@ -1,4 +1,4 @@
-﻿namespace MarcketPlace.Domain.Entities
+namespace MarcketPlace.Domain.Entities
 {
     public class Notification
     {
@@ -10,6 +10,7 @@
         public string Type { get; set; } = default!;
         public int? ReferenceId { get; set; }
         public bool IsRead { get; set; }
+        public DateTime? ReadAt { get; set; }
 
         public DateTime CreatedAt { get; set; }
 

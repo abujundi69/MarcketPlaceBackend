@@ -1,4 +1,4 @@
-﻿using MarcketPlace.Domain.Entities;
+using MarcketPlace.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -29,6 +29,9 @@ namespace MarcketPlace.Infrastructure.Data.Config
             builder.Property(x => x.IsRead)
                    .HasDefaultValue(false)
                    .IsRequired();
+
+            builder.Property(x => x.ReadAt)
+                   .HasColumnType("datetime2");
 
             builder.Property(x => x.CreatedAt)
                    .HasColumnType("datetime2")
