@@ -25,7 +25,7 @@ namespace MarcketPlace.Infrastructure.Data
         public DbSet<Notification> Notifications { get; set; } = default!;
         public DbSet<StoreRating> StoreRatings { get; set; } = default!;
         public DbSet<DriverRating> DriverRatings { get; set; } = default!;
-
+        public DbSet<ProductRequest> ProductRequests { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);

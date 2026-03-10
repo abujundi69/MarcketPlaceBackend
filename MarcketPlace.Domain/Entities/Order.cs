@@ -6,6 +6,8 @@ namespace MarcketPlace.Domain.Entities
     {
         public int Id { get; set; }
 
+        public string OrderNumber { get; set; } = default!;
+
         public int CustomerId { get; set; }
         public int? DriverId { get; set; }
         public int DeliveryZoneId { get; set; }

@@ -11,6 +11,14 @@ namespace MarcketPlace.Infrastructure.Data.Config
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
 
+            builder.Property(x => x.OrderNumber)
+                   .HasMaxLength(50)
+                   .IsUnicode(false)
+                   .IsRequired();
+
+            builder.HasIndex(x => x.OrderNumber)
+                   .IsUnique();
+
             builder.Property(x => x.Status)
                    .HasConversion<string>()
                    .HasMaxLength(20)

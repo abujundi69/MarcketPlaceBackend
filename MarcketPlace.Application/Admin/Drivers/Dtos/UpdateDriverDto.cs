@@ -1,4 +1,4 @@
-﻿namespace MarcketPlace.Application.Admin.Drivers.Dtos
+namespace MarcketPlace.Application.Admin.Drivers.Dtos
 {
     public class UpdateDriverDto
     {

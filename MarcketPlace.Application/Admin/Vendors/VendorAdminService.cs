@@ -1,8 +1,11 @@
 ﻿using MarcketPlace.Application.Admin.Vendors.Dtos;
-using MarcketPlace.Domain.Entities;
 using MarcketPlace.Domain.Enums;
 using MarcketPlace.Infrastructure.Data;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using StoreEntity = MarcketPlace.Domain.Entities.Store;
+using UserEntity = MarcketPlace.Domain.Entities.User;
+using VendorEntity = MarcketPlace.Domain.Entities.Vendor;
 
 namespace MarcketPlace.Application.Admin.Vendors
 {
@@ -19,25 +22,25 @@ namespace MarcketPlace.Application.Admin.Vendors
             CreateVendorByAdminDto dto,
             CancellationToken cancellationToken = default)
         {
-            var fullName = dto.FullName.Trim();
-            var phoneNumber = dto.PhoneNumber.Trim();
+            var fullName = dto.FullName?.Trim();
+            var phoneNumber = dto.PhoneNumber?.Trim();
 
             if (string.IsNullOrWhiteSpace(fullName))
                 throw new InvalidOperationException("اسم التاجر مطلوب.");
 
             if (string.IsNullOrWhiteSpace(phoneNumber))
-                throw new InvalidOperationException("رقم الهاتف مطلوب.");
+                throw new InvalidOperationException("رقم هاتف التاجر مطلوب.");
 
             var phoneExists = await _context.Users
                 .AsNoTracking()
                 .AnyAsync(x => x.PhoneNumber == phoneNumber, cancellationToken);
 
             if (phoneExists)
-                throw new InvalidOperationException("رقم الهاتف مستخدم مسبقاً.");
+                throw new InvalidOperationException("رقم الهاتف مستخدم مسبقًا.");
 
             await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
 
-            var user = new User
+            var user = new UserEntity
             {
                 FullName = fullName,
                 PhoneNumber = phoneNumber,
@@ -46,10 +49,14 @@ namespace MarcketPlace.Application.Admin.Vendors
                 CreatedAt = DateTime.UtcNow
             };
 
+            var rawPassword = $"{phoneNumber}@@";
+            var passwordHasher = new PasswordHasher<UserEntity>();
+            user.PasswordHash = passwordHasher.HashPassword(user, rawPassword);
+
             _context.Users.Add(user);
             await _context.SaveChangesAsync(cancellationToken);
 
-            var vendor = new Vendor
+            var vendor = new VendorEntity
             {
                 UserId = user.Id,
                 IsApproved = dto.IsApproved,
@@ -189,10 +196,11 @@ namespace MarcketPlace.Application.Admin.Vendors
                     : Math.Round((decimal)ratingsSum / ratingsCount, 2)
             };
         }
+
         public async Task<VendorAdminDetailsDto> UpdateAsync(
-    int vendorId,
-    UpdateVendorByAdminDto dto,
-    CancellationToken cancellationToken = default)
+            int vendorId,
+            UpdateVendorByAdminDto dto,
+            CancellationToken cancellationToken = default)
         {
             var vendor = await _context.Vendors
                 .Include(x => x.User)
@@ -202,23 +210,23 @@ namespace MarcketPlace.Application.Admin.Vendors
             if (vendor is null)
                 throw new KeyNotFoundException("التاجر غير موجود.");
 
-            var fullName = dto.FullName.Trim();
-            var phoneNumber = dto.PhoneNumber.Trim();
+            var fullName = dto.FullName?.Trim();
+            var phoneNumber = dto.PhoneNumber?.Trim();
 
             if (string.IsNullOrWhiteSpace(fullName))
                 throw new InvalidOperationException("اسم التاجر مطلوب.");
 
             if (string.IsNullOrWhiteSpace(phoneNumber))
-                throw new InvalidOperationException("رقم الهاتف مطلوب.");
+                throw new InvalidOperationException("رقم هاتف التاجر مطلوب.");
 
             var phoneExists = await _context.Users
                 .AsNoTracking()
                 .AnyAsync(x => x.PhoneNumber == phoneNumber && x.Id != vendor.UserId, cancellationToken);
 
             if (phoneExists)
-                throw new InvalidOperationException("رقم الهاتف مستخدم مسبقاً.");
+                throw new InvalidOperationException("رقم الهاتف مستخدم مسبقًا.");
 
-            Store? targetStore = null;
+            StoreEntity? targetStore = null;
 
             if (dto.StoreId.HasValue)
             {
@@ -229,7 +237,7 @@ namespace MarcketPlace.Application.Admin.Vendors
                     throw new KeyNotFoundException("المتجر غير موجود.");
 
                 if (targetStore.VendorId.HasValue && targetStore.VendorId.Value != vendor.Id)
-                    throw new InvalidOperationException("المتجر مرتبط بالفعل بتاجر آخر.");
+                    throw new InvalidOperationException("هذا المتجر مرتبط بالفعل بتاجر آخر.");
             }
 
             await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
@@ -260,6 +268,7 @@ namespace MarcketPlace.Application.Admin.Vendors
             var updatedVendor = await GetByIdAsync(vendor.Id, cancellationToken);
             return updatedVendor!;
         }
+
         private sealed class StoreRatingAggregate
         {
             public int StoreId { get; set; }

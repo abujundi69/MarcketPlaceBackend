@@ -7,7 +7,9 @@
         public string SystemNameEn { get; set; } = default!;
         public string FooterAr { get; set; } = default!;
         public string FooterEn { get; set; } = default!;
-        public string? LogoUrl { get; set; }
+
+        public byte[]? Logo { get; set; }
+
         public DateTime UpdatedAt { get; set; }
     }
 }

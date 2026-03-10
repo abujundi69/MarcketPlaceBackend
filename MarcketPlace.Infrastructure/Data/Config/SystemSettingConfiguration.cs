@@ -22,18 +22,17 @@ namespace MarcketPlace.Infrastructure.Data.Config
                    .IsRequired();
 
             builder.Property(x => x.FooterAr)
-                   .HasMaxLength(1000)
+                   .HasMaxLength(500)
                    .IsUnicode(true)
                    .IsRequired();
 
             builder.Property(x => x.FooterEn)
-                   .HasMaxLength(1000)
+                   .HasMaxLength(500)
                    .IsUnicode(true)
                    .IsRequired();
 
-            builder.Property(x => x.LogoUrl)
-                   .HasMaxLength(1000)
-                   .IsUnicode(false)
+            builder.Property(x => x.Logo)
+                   .HasColumnType("varbinary(max)")
                    .IsRequired(false);
 
             builder.Property(x => x.UpdatedAt)
