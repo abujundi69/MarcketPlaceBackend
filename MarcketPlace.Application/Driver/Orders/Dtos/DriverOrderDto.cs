@@ -23,6 +23,9 @@ namespace MarcketPlace.Application.Driver.Orders.Dtos
         public DateTime? PickedUpAt { get; set; }
         public DateTime? DeliveredAt { get; set; }
 
+        public DateTime? CancelledAt { get; set; }
+        public string? CancelReason { get; set; }
+
         public List<DriverOrderStoreDto> Stores { get; set; } = new();
     }
 }

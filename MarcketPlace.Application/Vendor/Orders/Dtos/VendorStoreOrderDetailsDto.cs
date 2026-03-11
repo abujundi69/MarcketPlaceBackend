@@ -32,6 +32,9 @@ namespace MarcketPlace.Application.Vendor.Orders.Dtos
         public DateTime? PickedUpAt { get; set; }
         public DateTime? DeliveredAt { get; set; }
 
+        public DateTime? CancelledAt { get; set; }
+        public string? CancelReason { get; set; }
+
         public List<VendorStoreOrderItemDto> Items { get; set; } = new();
     }
 }

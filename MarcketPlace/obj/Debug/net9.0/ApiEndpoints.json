@@ -1369,6 +1369,130 @@
   },
   {
     "ContainingType": "MarcketPlace.Controllers.CustomerOrdersController",
+    "Method": "Cancel",
+    "RelativePath": "api/customer/orders/{orderId}/cancel",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "orderId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "dto",
+        "Type": "MarcketPlace.Application.Customer.Orders.Dtos.CancelCustomerOrderDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MarcketPlace.Application.Customer.Orders.Dtos.CustomerOrderDetailsDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MarcketPlace.Controllers.CustomerRatingsController",
+    "Method": "CreateDriverRating",
+    "RelativePath": "api/customer/orders/{orderId}/driver-rating",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "orderId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "dto",
+        "Type": "MarcketPlace.Application.Customer.Ratings.Dtos.CreateDriverRatingDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MarcketPlace.Application.Customer.Ratings.Dtos.CustomerDriverRatingDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MarcketPlace.Controllers.CustomerRatingsController",
+    "Method": "GetRatingAvailability",
+    "RelativePath": "api/customer/orders/{orderId}/rating-availability",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "orderId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MarcketPlace.Application.Customer.Ratings.Dtos.CustomerOrderRatingAvailabilityDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MarcketPlace.Controllers.CustomerRatingsController",
+    "Method": "CreateStoreRating",
+    "RelativePath": "api/customer/orders/{orderId}/stores/{storeId}/rating",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "orderId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "storeId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "dto",
+        "Type": "MarcketPlace.Application.Customer.Ratings.Dtos.CreateStoreRatingDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MarcketPlace.Application.Customer.Ratings.Dtos.CustomerStoreRatingDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MarcketPlace.Controllers.CustomerOrdersController",
     "Method": "CheckoutFromCart",
     "RelativePath": "api/customer/orders/checkout-from-cart",
     "HttpMethod": "POST",
@@ -1870,6 +1994,83 @@
     "ReturnTypes": [
       {
         "Type": "MarcketPlace.Application.Vendor.Orders.Dtos.VendorStoreOrderDetailsDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MarcketPlace.Controllers.VendorStoresController",
+    "Method": "GetStoreWorkingHours",
+    "RelativePath": "api/vendor/stores/{storeId}/working-hours",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "storeId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MarcketPlace.Application.Vendor.Stores.Dtos.VendorStoreWorkingHoursDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MarcketPlace.Controllers.VendorStoresController",
+    "Method": "UpdateStoreWorkingHours",
+    "RelativePath": "api/vendor/stores/{storeId}/working-hours",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "storeId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "dto",
+        "Type": "MarcketPlace.Application.Vendor.Stores.Dtos.UpdateVendorStoreWorkingHoursDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MarcketPlace.Application.Vendor.Stores.Dtos.VendorStoreWorkingHoursDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MarcketPlace.Controllers.VendorStoresController",
+    "Method": "GetMyStoresWorkingHours",
+    "RelativePath": "api/vendor/stores/working-hours",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IReadOnlyList\u00601[[MarcketPlace.Application.Vendor.Stores.Dtos.VendorStoreWorkingHoursDto, MarcketPlace.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",

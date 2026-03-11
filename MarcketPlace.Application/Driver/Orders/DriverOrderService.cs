@@ -230,6 +230,8 @@ namespace MarcketPlace.Application.Driver.Orders
                 DriverAssignedAt = order.DriverAssignedAt,
                 PickedUpAt = order.PickedUpAt,
                 DeliveredAt = order.DeliveredAt,
+                CancelledAt = order.CancelledAt,
+                CancelReason = order.CancelReason,
                 Stores = order.OrderStores
                     .Select(x => new DriverOrderStoreDto
                     {

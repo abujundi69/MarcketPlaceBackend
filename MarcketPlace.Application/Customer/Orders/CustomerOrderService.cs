@@ -245,6 +245,103 @@ namespace MarcketPlace.Application.Customer.Orders
             return MapCustomerOrderDetails(order);
         }
 
+        public async Task<CustomerOrderDetailsDto> CancelAsync(
+            int customerUserId,
+            int orderId,
+            CancelCustomerOrderDto dto,
+            CancellationToken cancellationToken = default)
+        {
+            if (orderId <= 0)
+                throw new InvalidOperationException("رقم الطلب غير صالح.");
+
+            if (dto is null)
+                throw new InvalidOperationException("البيانات المرسلة غير صالحة.");
+
+            var customer = await _context.Customers
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.UserId == customerUserId, cancellationToken);
+
+            if (customer is null)
+                throw new KeyNotFoundException("الزبون غير موجود.");
+
+            var order = await _context.Orders
+                .Include(x => x.Driver)
+                    .ThenInclude(x => x!.User)
+                .Include(x => x.OrderStores)
+                    .ThenInclude(x => x.Store)
+                .Include(x => x.OrderStores)
+                    .ThenInclude(x => x.OrderItems)
+                .FirstOrDefaultAsync(
+                    x => x.Id == orderId && x.CustomerId == customer.Id,
+                    cancellationToken);
+
+            if (order is null)
+                throw new KeyNotFoundException("الطلب غير موجود.");
+
+            if (order.Status == OrderStatus.Cancelled)
+                return MapCustomerOrderDetails(order);
+
+            if (order.Status == OrderStatus.PickedUp || order.Status == OrderStatus.Delivered)
+                throw new InvalidOperationException("لا يمكن إلغاء الطلب بعد أن استلمه السائق.");
+
+            if (order.Status != OrderStatus.Pending && order.Status != OrderStatus.DriverAssigned)
+                throw new InvalidOperationException("لا يمكن إلغاء الطلب في حالته الحالية.");
+
+            var utcNow = DateTime.UtcNow;
+            var normalizedReason = string.IsNullOrWhiteSpace(dto.CancelReason)
+                ? null
+                : dto.CancelReason.Trim();
+
+            using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
+
+            var productQuantities = order.OrderStores
+                .SelectMany(x => x.OrderItems)
+                .GroupBy(x => x.ProductId)
+                .Select(g => new
+                {
+                    ProductId = g.Key,
+                    Quantity = g.Sum(i => i.Quantity)
+                })
+                .ToList();
+
+            var productIds = productQuantities
+                .Select(x => x.ProductId)
+                .Distinct()
+                .ToList();
+
+            var products = await _context.Products
+                .Where(x => productIds.Contains(x.Id))
+                .ToListAsync(cancellationToken);
+
+            foreach (var item in productQuantities)
+            {
+                var product = products.FirstOrDefault(x => x.Id == item.ProductId);
+
+                if (product is null)
+                    throw new KeyNotFoundException($"المنتج المرتبط بالطلب غير موجود. ProductId = {item.ProductId}");
+
+                product.StockQuantity += item.Quantity;
+                product.UpdatedAt = utcNow;
+            }
+
+            order.Status = OrderStatus.Cancelled;
+            order.CancelReason = normalizedReason;
+            order.CancelledAt = utcNow;
+            order.CancelledByUserId = customerUserId;
+            order.UpdatedAt = utcNow;
+
+            foreach (var orderStore in order.OrderStores)
+            {
+                orderStore.Status = OrderStoreStatus.Cancelled;
+                orderStore.UpdatedAt = utcNow;
+            }
+
+            await _context.SaveChangesAsync(cancellationToken);
+            await transaction.CommitAsync(cancellationToken);
+
+            return MapCustomerOrderDetails(order);
+        }
+
         private async Task<int> GetCustomerIdAsync(
             int customerUserId,
             CancellationToken cancellationToken)
