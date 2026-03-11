@@ -28,5 +28,7 @@ namespace MarcketPlace.Controllers
 
             return Ok(result);
         }
+
     }
+
 }

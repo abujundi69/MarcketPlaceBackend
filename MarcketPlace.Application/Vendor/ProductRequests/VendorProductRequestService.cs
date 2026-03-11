@@ -98,7 +98,7 @@ namespace MarcketPlace.Application.Vendor.ProductRequests
                 NameEn = nameEn,
                 DescriptionAr = dto.DescriptionAr?.Trim(),
                 DescriptionEn = dto.DescriptionEn?.Trim(),
-                ImageUrl = dto.ImageUrl?.Trim(),
+                Image = dto.Image is { Length: > 0 } ? dto.Image : null,
                 Price = dto.Price,
                 StockQuantity = dto.StockQuantity,
                 MinStockQuantity = dto.MinStockQuantity,

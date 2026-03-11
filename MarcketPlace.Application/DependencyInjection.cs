@@ -1,17 +1,22 @@
+using MarcketPlace.Application.Account;
 using MarcketPlace.Application.Admin.Categories;
 using MarcketPlace.Application.Admin.Customers;
+using MarcketPlace.Application.Admin.Dashboard;
 using MarcketPlace.Application.Admin.DeliveryZones;
 using MarcketPlace.Application.Admin.Drivers;
-using MarcketPlace.Application.Admin.Orders;
 using MarcketPlace.Application.Admin.Notifications;
+using MarcketPlace.Application.Admin.Orders;
 using MarcketPlace.Application.Admin.ProductRequests;
 using MarcketPlace.Application.Admin.Products;
 using MarcketPlace.Application.Admin.Stores;
 using MarcketPlace.Application.Admin.SystemSettings;
 using MarcketPlace.Application.Admin.Vendors;
 using MarcketPlace.Application.Auth;
+using MarcketPlace.Application.Customer.Cart;
+using MarcketPlace.Application.Customer.Locations;
 using MarcketPlace.Application.Customer.Orders;
 using MarcketPlace.Application.Customer.Stores;
+using MarcketPlace.Application.Driver.Orders;
 using MarcketPlace.Application.Orders;
 using MarcketPlace.Application.Users;
 using MarcketPlace.Application.Vendor.Categories;
@@ -49,9 +54,13 @@ namespace MarcketPlace.Application
             services.AddScoped<IVendorCategoryService, VendorCategoryService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<ICustomerAdminService, CustomerAdminService>();
+            services.AddScoped<ICustomerOrderService, CustomerOrderService>();
+            services.AddScoped<IMyAccountService, MyAccountService>();
+            services.AddScoped<IAdminDashboardService, AdminDashboardService>();
+            services.AddScoped<ICustomerCartService, CustomerCartService>();
             services.AddScoped<ICustomerStoreCatalogService, CustomerStoreCatalogService>();
-           services.AddScoped<ICustomerOrderService, CustomerOrderService>();
-
+            services.AddScoped<IDriverOrderService, DriverOrderService>();
+            services.AddScoped<ICustomerLocationService, CustomerLocationService>();
             return services;
         }
     }

@@ -8,7 +8,7 @@
 
         public string ProductNameAr { get; set; } = default!;
         public string ProductNameEn { get; set; } = default!;
-        public string? ProductImageUrl { get; set; }
+        public byte[]? ProductImage { get; set; }
 
         public decimal UnitPrice { get; set; }
         public int Quantity { get; set; }

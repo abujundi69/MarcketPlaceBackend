@@ -29,5 +29,8 @@ namespace MarcketPlace.Application.Admin.Stores.Dtos
         public bool IsActive { get; set; }
 
         public int? VendorId { get; set; }
+
+        public string? LogoBase64 { get; set; }
+        public bool RemoveLogo { get; set; }
     }
 }

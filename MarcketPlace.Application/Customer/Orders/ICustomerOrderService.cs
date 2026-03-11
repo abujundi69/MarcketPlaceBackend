@@ -8,5 +8,14 @@ namespace MarcketPlace.Application.Customer.Orders
             int customerUserId,
             CreateCustomerOrderFromCartDto dto,
             CancellationToken cancellationToken = default);
+
+        Task<IReadOnlyList<CustomerOrderListItemDto>> GetMyOrdersAsync(
+            int customerUserId,
+            CancellationToken cancellationToken = default);
+
+        Task<CustomerOrderDetailsDto> GetByIdAsync(
+            int customerUserId,
+            int orderId,
+            CancellationToken cancellationToken = default);
     }
 }

@@ -3,6 +3,7 @@ using MarcketPlace.Domain.Entities;
 using MarcketPlace.Domain.Enums;
 using MarcketPlace.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using DriverEntity = MarcketPlace.Domain.Entities.Driver;
 
 namespace MarcketPlace.Application.Customer.Orders
 {
@@ -23,11 +24,19 @@ namespace MarcketPlace.Application.Customer.Orders
             if (dto is null)
                 throw new InvalidOperationException("البيانات المرسلة غير صالحة.");
 
+            if (dto.DeliveryZoneId <= 0)
+                throw new InvalidOperationException("منطقة التوصيل غير صالحة.");
+
             if (string.IsNullOrWhiteSpace(dto.AddressText))
                 throw new InvalidOperationException("عنوان التوصيل مطلوب.");
 
+            if (dto.Latitude < -90 || dto.Latitude > 90)
+                throw new InvalidOperationException("خط العرض غير صالح.");
+
+            if (dto.Longitude < -180 || dto.Longitude > 180)
+                throw new InvalidOperationException("خط الطول غير صالح.");
+
             var customer = await _context.Customers
-                .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.UserId == customerUserId, cancellationToken);
 
             if (customer is null)
@@ -43,37 +52,40 @@ namespace MarcketPlace.Application.Customer.Orders
             var cartItems = await _context.CartItems
                 .Include(x => x.Product)
                     .ThenInclude(x => x!.Store)
-                .Include(x => x.Product)
-                    .ThenInclude(x => x!.Category)
                 .Where(x => x.CustomerId == customer.Id)
+                .OrderBy(x => x.CreatedAt)
                 .ToListAsync(cancellationToken);
 
             if (cartItems.Count == 0)
                 throw new InvalidOperationException("السلة فارغة.");
+
+            var validatedItems = new List<(CartItem CartItem, Product Product, Store Store)>();
 
             foreach (var cartItem in cartItems)
             {
                 if (cartItem.Quantity <= 0)
                     throw new InvalidOperationException("يوجد عنصر في السلة بكمية غير صحيحة.");
 
-                if (cartItem.Product is null)
-                    throw new InvalidOperationException("يوجد منتج غير صالح في السلة.");
+                var product = cartItem.Product
+                    ?? throw new InvalidOperationException("يوجد منتج غير صالح في السلة.");
 
-                if (cartItem.Product.StoreId is null)
-                    throw new InvalidOperationException("يوجد منتج غير مرتبط بمتجر داخل السلة.");
+                if (product.StoreId is null || product.Store is null)
+                    throw new InvalidOperationException($"المنتج {product.NameAr} غير مرتبط بمتجر.");
 
-                if (cartItem.Product.Store is null || !cartItem.Product.Store.IsActive)
-                    throw new InvalidOperationException($"المتجر الخاص بالمنتج {cartItem.Product.NameAr} غير متاح.");
+                if (!product.Store.IsActive)
+                    throw new InvalidOperationException($"المتجر الخاص بالمنتج {product.NameAr} غير متاح.");
 
-                if (cartItem.Product.ApprovalStatus != ProductApprovalStatus.Approved)
-                    throw new InvalidOperationException($"المنتج {cartItem.Product.NameAr} غير معتمد.");
+                if (product.ApprovalStatus != ProductApprovalStatus.Approved)
+                    throw new InvalidOperationException($"المنتج {product.NameAr} غير معتمد.");
 
-                if (cartItem.Product.StockQuantity < cartItem.Quantity)
-                    throw new InvalidOperationException($"الكمية المطلوبة من المنتج {cartItem.Product.NameAr} غير متوفرة.");
+                if (product.StockQuantity < cartItem.Quantity)
+                    throw new InvalidOperationException($"الكمية المطلوبة من المنتج {product.NameAr} غير متوفرة.");
+
+                validatedItems.Add((cartItem, product, product.Store));
             }
 
             var utcNow = DateTime.UtcNow;
-            var subtotal = cartItems.Sum(x => x.Product.Price * x.Quantity);
+            var subtotal = validatedItems.Sum(x => x.Product.Price * x.CartItem.Quantity);
             var deliveryFee = deliveryZone.DeliveryFee;
             var totalAmount = subtotal + deliveryFee;
 
@@ -100,70 +112,70 @@ namespace MarcketPlace.Application.Customer.Orders
                 CancelledByUserId = null,
                 CancelledAt = null,
                 CreatedAt = utcNow,
-                UpdatedAt = null
+                UpdatedAt = null,
+                OrderStores = new List<OrderStore>()
             };
 
-            _context.Orders.Add(order);
-            await _context.SaveChangesAsync(cancellationToken);
-
-            var groupedByStore = cartItems
-                .GroupBy(x => x.Product.StoreId!.Value)
+            var groupedByStore = validatedItems
+                .GroupBy(x => new
+                {
+                    x.Store.Id,
+                    x.Store.NameAr,
+                    x.Store.NameEn
+                })
                 .ToList();
-
-            var orderStores = new List<OrderStore>();
 
             foreach (var storeGroup in groupedByStore)
             {
-                var firstItem = storeGroup.First();
-                var storeSubtotal = storeGroup.Sum(x => x.Product.Price * x.Quantity);
-
                 var orderStore = new OrderStore
                 {
-                    OrderId = order.Id,
-                    StoreId = storeGroup.Key,
+                    StoreId = storeGroup.Key.Id,
                     Status = OrderStoreStatus.Pending,
                     Note = null,
                     ReadyAt = null,
-                    StoreSubtotal = storeSubtotal,
+                    StoreSubtotal = storeGroup.Sum(x => x.Product.Price * x.CartItem.Quantity),
                     CreatedAt = utcNow,
-                    UpdatedAt = null
+                    UpdatedAt = null,
+                    OrderItems = new List<OrderItem>()
                 };
 
-                _context.OrderStores.Add(orderStore);
-                await _context.SaveChangesAsync(cancellationToken);
-
-                foreach (var cartItem in storeGroup)
+                foreach (var entry in storeGroup)
                 {
-                    var product = cartItem.Product;
+                    var cartItem = entry.CartItem;
+                    var product = entry.Product;
 
-                    var orderItem = new OrderItem
+                    orderStore.OrderItems.Add(new OrderItem
                     {
-                        OrderStoreId = orderStore.Id,
                         ProductId = product.Id,
                         ProductNameAr = product.NameAr,
                         ProductNameEn = product.NameEn,
-                        ProductImageUrl = product.ImageUrl,
+                        ProductImage = product.Image,
                         UnitPrice = product.Price,
                         Quantity = cartItem.Quantity,
                         LineTotal = product.Price * cartItem.Quantity,
                         CreatedAt = utcNow
-                    };
-
-                    _context.OrderItems.Add(orderItem);
+                    });
 
                     product.StockQuantity -= cartItem.Quantity;
                     product.UpdatedAt = utcNow;
                 }
 
-                orderStores.Add(orderStore);
+                order.OrderStores.Add(orderStore);
             }
 
+            customer.DefaultDeliveryZoneId = dto.DeliveryZoneId;
+            customer.DefaultAddressText = dto.AddressText.Trim();
+            customer.DefaultLatitude = dto.Latitude;
+            customer.DefaultLongitude = dto.Longitude;
+            customer.LocationUpdatedAt = utcNow;
+
+            _context.Orders.Add(order);
             _context.CartItems.RemoveRange(cartItems);
 
             await _context.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
 
-            var result = new CustomerCreatedOrderDto
+            return new CustomerCreatedOrderDto
             {
                 OrderId = order.Id,
                 OrderNumber = order.OrderNumber,
@@ -174,24 +186,159 @@ namespace MarcketPlace.Application.Customer.Orders
                 AddressText = order.AddressText,
                 CustomerNote = order.CustomerNote,
                 CreatedAt = order.CreatedAt,
-                Stores = orderStores.Select(x => new CustomerCreatedOrderStoreDto
-                {
-                    OrderStoreId = x.Id,
-                    StoreId = x.StoreId,
-                    StoreNameAr = groupedByStore
-                        .First(g => g.Key == x.StoreId)
-                        .First()
-                        .Product.Store!.NameAr,
-                    StoreNameEn = groupedByStore
-                        .First(g => g.Key == x.StoreId)
-                        .First()
-                        .Product.Store!.NameEn,
-                    StoreSubtotal = x.StoreSubtotal,
-                    Status = x.Status
-                }).ToList()
+                Stores = order.OrderStores
+                    .Select(x => new CustomerCreatedOrderStoreDto
+                    {
+                        OrderStoreId = x.Id,
+                        StoreId = x.StoreId,
+                        StoreNameAr = groupedByStore.First(g => g.Key.Id == x.StoreId).Key.NameAr,
+                        StoreNameEn = groupedByStore.First(g => g.Key.Id == x.StoreId).Key.NameEn,
+                        StoreSubtotal = x.StoreSubtotal,
+                        Status = x.Status
+                    })
+                    .ToList()
             };
+        }
 
-            return result;
+        public async Task<IReadOnlyList<CustomerOrderListItemDto>> GetMyOrdersAsync(
+            int customerUserId,
+            CancellationToken cancellationToken = default)
+        {
+            var customerId = await GetCustomerIdAsync(customerUserId, cancellationToken);
+
+            var orders = await _context.Orders
+                .AsNoTracking()
+                .Include(x => x.Driver)
+                    .ThenInclude(x => x!.User)
+                .Where(x => x.CustomerId == customerId)
+                .OrderByDescending(x => x.CreatedAt)
+                .ToListAsync(cancellationToken);
+
+            return orders.Select(MapCustomerOrderListItem).ToList();
+        }
+
+        public async Task<CustomerOrderDetailsDto> GetByIdAsync(
+            int customerUserId,
+            int orderId,
+            CancellationToken cancellationToken = default)
+        {
+            if (orderId <= 0)
+                throw new InvalidOperationException("رقم الطلب غير صالح.");
+
+            var customerId = await GetCustomerIdAsync(customerUserId, cancellationToken);
+
+            var order = await _context.Orders
+                .AsNoTracking()
+                .Include(x => x.Driver)
+                    .ThenInclude(x => x!.User)
+                .Include(x => x.OrderStores)
+                    .ThenInclude(x => x.Store)
+                .Include(x => x.OrderStores)
+                    .ThenInclude(x => x.OrderItems)
+                .FirstOrDefaultAsync(
+                    x => x.Id == orderId && x.CustomerId == customerId,
+                    cancellationToken);
+
+            if (order is null)
+                throw new KeyNotFoundException("الطلب غير موجود.");
+
+            return MapCustomerOrderDetails(order);
+        }
+
+        private async Task<int> GetCustomerIdAsync(
+            int customerUserId,
+            CancellationToken cancellationToken)
+        {
+            var customer = await _context.Customers
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.UserId == customerUserId, cancellationToken);
+
+            if (customer is null)
+                throw new KeyNotFoundException("الزبون غير موجود.");
+
+            return customer.Id;
+        }
+
+        private static CustomerOrderListItemDto MapCustomerOrderListItem(Order order)
+        {
+            return new CustomerOrderListItemDto
+            {
+                OrderId = order.Id,
+                OrderNumber = order.OrderNumber,
+                Status = order.Status,
+                Subtotal = order.Subtotal,
+                DeliveryFee = order.DeliveryFee,
+                TotalAmount = order.TotalAmount,
+                CreatedAt = order.CreatedAt,
+                DriverAssignedAt = order.DriverAssignedAt,
+                PickedUpAt = order.PickedUpAt,
+                DeliveredAt = order.DeliveredAt,
+                Driver = MapCustomerDriver(order.Driver)
+            };
+        }
+
+        private static CustomerOrderDetailsDto MapCustomerOrderDetails(Order order)
+        {
+            return new CustomerOrderDetailsDto
+            {
+                OrderId = order.Id,
+                OrderNumber = order.OrderNumber,
+                Status = order.Status,
+                AddressText = order.AddressText,
+                Latitude = order.Latitude,
+                Longitude = order.Longitude,
+                CustomerNote = order.CustomerNote,
+                Subtotal = order.Subtotal,
+                DeliveryFee = order.DeliveryFee,
+                TotalAmount = order.TotalAmount,
+                CreatedAt = order.CreatedAt,
+                DriverAssignedAt = order.DriverAssignedAt,
+                PickedUpAt = order.PickedUpAt,
+                DeliveredAt = order.DeliveredAt,
+                Driver = MapCustomerDriver(order.Driver),
+                Stores = order.OrderStores
+                    .OrderBy(x => x.Id)
+                    .Select(x => new CustomerOrderStoreDto
+                    {
+                        OrderStoreId = x.Id,
+                        StoreId = x.StoreId,
+                        StoreNameAr = x.Store?.NameAr ?? string.Empty,
+                        StoreNameEn = x.Store?.NameEn ?? string.Empty,
+                        Status = x.Status,
+                        ReadyAt = x.ReadyAt,
+                        StoreSubtotal = x.StoreSubtotal,
+                        Items = x.OrderItems
+                            .OrderBy(i => i.Id)
+                            .Select(i => new CustomerOrderItemDto
+                            {
+                                OrderItemId = i.Id,
+                                ProductId = i.ProductId,
+                                ProductNameAr = i.ProductNameAr,
+                                ProductNameEn = i.ProductNameEn,
+                                ProductImage = i.ProductImage,
+                                UnitPrice = i.UnitPrice,
+                                Quantity = i.Quantity,
+                                LineTotal = i.LineTotal
+                            })
+                            .ToList()
+                    })
+                    .ToList()
+            };
+        }
+
+        private static CustomerOrderDriverDto? MapCustomerDriver(DriverEntity? driver)
+        {
+            if (driver is null)
+                return null;
+
+            return new CustomerOrderDriverDto
+            {
+                DriverId = driver.Id,
+                FullName = driver.User?.FullName ?? string.Empty,
+                PhoneNumber = driver.User?.PhoneNumber ?? string.Empty,
+                VehicleType = driver.VehicleType,
+                VehicleNumber = driver.VehicleNumber
+            };
         }
 
         private static string GenerateOrderNumber()

@@ -114,7 +114,7 @@ namespace MarcketPlace.Application.Vendor.Orders
                             ProductId = i.ProductId,
                             ProductNameAr = i.ProductNameAr,
                             ProductNameEn = i.ProductNameEn,
-                            ProductImageUrl = i.ProductImageUrl,
+                            ProductImage = i.ProductImage,
                             UnitPrice = i.UnitPrice,
                             Quantity = i.Quantity,
                             LineTotal = i.LineTotal

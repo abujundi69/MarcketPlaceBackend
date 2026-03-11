@@ -31,9 +31,9 @@ namespace MarcketPlace.Infrastructure.Data.Config
                    .IsUnicode(true)
                    .IsRequired(false);
 
-            builder.Property(x => x.ImageUrl)
-                   .HasMaxLength(1000)
-                   .IsUnicode(false)
+            // بدل ImageUrl
+            builder.Property(x => x.Image)
+                   .HasColumnType("varbinary(max)")
                    .IsRequired(false);
 
             builder.Property(x => x.Price)

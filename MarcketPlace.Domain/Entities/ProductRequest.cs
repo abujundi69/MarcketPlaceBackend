@@ -14,8 +14,7 @@ namespace MarcketPlace.Domain.Entities
         public string NameEn { get; set; } = default!;
         public string? DescriptionAr { get; set; }
         public string? DescriptionEn { get; set; }
-        public string? ImageUrl { get; set; }
-
+        public byte[]? Image { get; set; }
         public decimal Price { get; set; }
         public int StockQuantity { get; set; }
         public int MinStockQuantity { get; set; }

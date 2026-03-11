@@ -20,6 +20,8 @@
         public string? VendorPhoneNumber { get; set; }
         public bool? VendorIsApproved { get; set; }
 
+        public bool HasLogo { get; set; }
+
         public decimal AverageRating { get; set; }
         public int RatingsCount { get; set; }
 

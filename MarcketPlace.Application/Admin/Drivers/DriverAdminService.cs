@@ -4,6 +4,7 @@ using MarcketPlace.Domain.Enums;
 using MarcketPlace.Infrastructure.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using DriverEntity = MarcketPlace.Domain.Entities.Driver;
 
 namespace MarcketPlace.Application.Admin.Drivers
 {
@@ -101,7 +102,7 @@ namespace MarcketPlace.Application.Admin.Drivers
             _context.Users.Add(user);
             await _context.SaveChangesAsync(cancellationToken);
 
-            var driver = new Driver
+            var driver = new DriverEntity
             {
                 UserId = user.Id,
                 VehicleType = dto.VehicleType.Trim(),
@@ -192,7 +193,7 @@ namespace MarcketPlace.Application.Admin.Drivers
                 throw new InvalidOperationException("رقم المركبة مطلوب.");
         }
 
-        private static DriverDetailsDto MapToDetails(Driver driver)
+        private static DriverDetailsDto MapToDetails(DriverEntity driver)
         {
             return new DriverDetailsDto
             {

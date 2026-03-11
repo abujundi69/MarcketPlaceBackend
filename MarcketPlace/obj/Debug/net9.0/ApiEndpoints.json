@@ -1,5 +1,67 @@
 [
   {
+    "ContainingType": "MarcketPlace.Controllers.AccountController",
+    "Method": "ChangePassword",
+    "RelativePath": "api/account/change-password",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "MarcketPlace.Application.Account.Dtos.ChangeMyPasswordDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MarcketPlace.Controllers.AccountController",
+    "Method": "GetMyProfile",
+    "RelativePath": "api/account/me",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "MarcketPlace.Application.Account.Dtos.MyProfileDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MarcketPlace.Controllers.AccountController",
+    "Method": "UpdateMyProfile",
+    "RelativePath": "api/account/me",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "MarcketPlace.Application.Account.Dtos.UpdateMyProfileDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MarcketPlace.Application.Account.Dtos.MyProfileDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
     "ContainingType": "MarcketPlace.Controllers.AdminCategoriesController",
     "Method": "Create",
     "RelativePath": "api/admin/categories",
@@ -62,6 +124,26 @@
     "ReturnTypes": [
       {
         "Type": "MarcketPlace.Application.Admin.Categories.Dtos.CategoryDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MarcketPlace.Controllers.AdminDashboardController",
+    "Method": "GetStats",
+    "RelativePath": "api/admin/dashboard/stats",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "MarcketPlace.Application.Admin.Dashboard.Dtos.SuperAdminDashboardStatsDto",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -165,6 +247,62 @@
     "ReturnTypes": [
       {
         "Type": "MarcketPlace.Application.Admin.DeliveryZones.Dtos.DeliveryZoneDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MarcketPlace.Controllers.AdminNotificationsController",
+    "Method": "GetMyNotifications",
+    "RelativePath": "api/admin/notifications",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IReadOnlyList\u00601[[MarcketPlace.Application.Admin.Notifications.Dtos.AdminNotificationDto, MarcketPlace.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MarcketPlace.Controllers.AdminNotificationsController",
+    "Method": "MarkAsRead",
+    "RelativePath": "api/admin/notifications/{id}/read",
+    "HttpMethod": "PATCH",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MarcketPlace.Controllers.AdminNotificationsController",
+    "Method": "GetUnreadCount",
+    "RelativePath": "api/admin/notifications/unread-count",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Int32",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1055,22 +1193,145 @@
     ]
   },
   {
-    "ContainingType": "MarcketPlace.Controllers.CustomerOrdersController",
-    "Method": "Checkout",
-    "RelativePath": "api/customer/orders/checkout",
+    "ContainingType": "MarcketPlace.Controllers.CustomerCartController",
+    "Method": "GetCart",
+    "RelativePath": "api/customer/cart",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "MarcketPlace.Application.Customer.Cart.Dtos.CustomerCartDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MarcketPlace.Controllers.CustomerCartController",
+    "Method": "ClearCart",
+    "RelativePath": "api/customer/cart/clear",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MarcketPlace.Controllers.CustomerCartController",
+    "Method": "AddItem",
+    "RelativePath": "api/customer/cart/items",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
         "Name": "dto",
-        "Type": "MarcketPlace.Application.Orders.Dtos.CheckoutOrderDto",
+        "Type": "MarcketPlace.Application.Customer.Cart.Dtos.AddCustomerCartItemDto",
         "IsRequired": true
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "MarcketPlace.Application.Orders.Dtos.CheckoutOrderResultDto",
+        "Type": "MarcketPlace.Application.Customer.Cart.Dtos.CustomerCartDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MarcketPlace.Controllers.CustomerCartController",
+    "Method": "UpdateQuantity",
+    "RelativePath": "api/customer/cart/items/{cartItemId}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "cartItemId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "dto",
+        "Type": "MarcketPlace.Application.Customer.Cart.Dtos.UpdateCustomerCartItemQuantityDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MarcketPlace.Application.Customer.Cart.Dtos.CustomerCartDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MarcketPlace.Controllers.CustomerCartController",
+    "Method": "RemoveItem",
+    "RelativePath": "api/customer/cart/items/{cartItemId}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "cartItemId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MarcketPlace.Controllers.CustomerLocationController",
+    "Method": "GetMyLocation",
+    "RelativePath": "api/customer/location",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "MarcketPlace.Application.Customer.Locations.Dtos.CustomerSavedLocationDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MarcketPlace.Controllers.CustomerLocationController",
+    "Method": "UpdateMyLocation",
+    "RelativePath": "api/customer/location",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "MarcketPlace.Application.Customer.Locations.Dtos.UpdateCustomerSavedLocationDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MarcketPlace.Application.Customer.Locations.Dtos.CustomerSavedLocationDto",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1082,8 +1343,34 @@
   },
   {
     "ContainingType": "MarcketPlace.Controllers.CustomerOrdersController",
-    "Method": "CreateFromCart",
-    "RelativePath": "api/customer/orders/from-cart",
+    "Method": "GetById",
+    "RelativePath": "api/customer/orders/{orderId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "orderId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MarcketPlace.Application.Customer.Orders.Dtos.CustomerOrderDetailsDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MarcketPlace.Controllers.CustomerOrdersController",
+    "Method": "CheckoutFromCart",
+    "RelativePath": "api/customer/orders/checkout-from-cart",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -1097,6 +1384,72 @@
     "ReturnTypes": [
       {
         "Type": "MarcketPlace.Application.Customer.Orders.Dtos.CustomerCreatedOrderDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MarcketPlace.Controllers.CustomerOrdersController",
+    "Method": "GetMyOrders",
+    "RelativePath": "api/customer/orders/my-orders",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IReadOnlyList\u00601[[MarcketPlace.Application.Customer.Orders.Dtos.CustomerOrderListItemDto, MarcketPlace.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MarcketPlace.Controllers.CustomerStoresController",
+    "Method": "GetAll",
+    "RelativePath": "api/customer/stores",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IReadOnlyList\u00601[[MarcketPlace.Application.Customer.Stores.Dtos.StoreListItemDto, MarcketPlace.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MarcketPlace.Controllers.CustomerStoresController",
+    "Method": "GetById",
+    "RelativePath": "api/customer/stores/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MarcketPlace.Application.Customer.Stores.Dtos.StoreDetailsDto",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1128,6 +1481,144 @@
     "ReturnTypes": [
       {
         "Type": "System.Collections.Generic.IReadOnlyList\u00601[[MarcketPlace.Application.Customer.Stores.Dtos.CustomerStoreProductDto, MarcketPlace.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MarcketPlace.Controllers.DriverOrdersController",
+    "Method": "AcceptOrder",
+    "RelativePath": "api/driver/orders/{orderId}/accept",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "orderId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MarcketPlace.Application.Driver.Orders.Dtos.DriverOrderDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MarcketPlace.Controllers.DriverOrdersController",
+    "Method": "DeliverOrder",
+    "RelativePath": "api/driver/orders/{orderId}/deliver",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "orderId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MarcketPlace.Application.Driver.Orders.Dtos.DriverOrderDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MarcketPlace.Controllers.DriverOrdersController",
+    "Method": "PickUpOrder",
+    "RelativePath": "api/driver/orders/{orderId}/pickup",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "orderId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MarcketPlace.Application.Driver.Orders.Dtos.DriverOrderDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MarcketPlace.Controllers.DriverOrdersController",
+    "Method": "GetAvailableOrders",
+    "RelativePath": "api/driver/orders/available",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IReadOnlyList\u00601[[MarcketPlace.Application.Driver.Orders.Dtos.DriverOrderDto, MarcketPlace.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MarcketPlace.Controllers.DriverOrdersController",
+    "Method": "GetMyOrders",
+    "RelativePath": "api/driver/orders/my-orders",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IReadOnlyList\u00601[[MarcketPlace.Application.Driver.Orders.Dtos.DriverOrderDto, MarcketPlace.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MarcketPlace.Controllers.VendorCategoriesController",
+    "Method": "GetActiveCategories",
+    "RelativePath": "api/vendor/categories",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IReadOnlyList\u00601[[MarcketPlace.Application.Vendor.Categories.Dtos.VendorCategoryListItemDto, MarcketPlace.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -1251,6 +1742,26 @@
     "ReturnTypes": [
       {
         "Type": "MarcketPlace.Application.Vendor.Products.Dtos.VendorProductDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MarcketPlace.Controllers.VendorStoresController",
+    "Method": "GetMyStores",
+    "RelativePath": "api/vendor/stores",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IReadOnlyList\u00601[[MarcketPlace.Application.Vendor.Stores.Dtos.VendorStoreListItemDto, MarcketPlace.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",

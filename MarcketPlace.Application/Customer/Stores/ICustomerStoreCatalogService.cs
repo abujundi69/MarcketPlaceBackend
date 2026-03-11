@@ -8,5 +8,7 @@ namespace MarcketPlace.Application.Customer.Stores
             int storeId,
             int? categoryId,
             CancellationToken cancellationToken = default);
+        Task<IReadOnlyList<StoreListItemDto>> GetAllAsync(CancellationToken cancellationToken = default);
+        Task<StoreDetailsDto> GetByIdAsync(int id, CancellationToken cancellationToken = default);
     }
 }

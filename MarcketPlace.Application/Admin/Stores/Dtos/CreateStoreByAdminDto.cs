@@ -30,5 +30,7 @@ namespace MarcketPlace.Application.Admin.Stores.Dtos
 
         [Range(1, int.MaxValue)]
         public int? VendorId { get; set; }
+
+        public string? LogoBase64 { get; set; }
     }
 }

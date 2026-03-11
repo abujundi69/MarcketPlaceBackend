@@ -17,17 +17,31 @@ namespace MarcketPlace.Application.Vendor.Stores
             int userId,
             CancellationToken cancellationToken = default)
         {
-            return await _context.Stores
+            var stores = await _context.Stores
                 .AsNoTracking()
                 .Where(x => x.Vendor != null && x.Vendor.UserId == userId && x.IsActive)
                 .OrderBy(x => x.NameAr)
+                .Select(x => new
+                {
+                    x.Id,
+                    x.NameAr,
+                    x.NameEn,
+                    x.Logo
+                })
+                .ToListAsync(cancellationToken);
+
+            return stores
                 .Select(x => new VendorStoreListItemDto
                 {
                     Id = x.Id,
                     NameAr = x.NameAr,
-                    NameEn = x.NameEn
+                    NameEn = x.NameEn,
+                    HasLogo = x.Logo != null && x.Logo.Length > 0,
+                    LogoBase64 = x.Logo != null && x.Logo.Length > 0
+                        ? Convert.ToBase64String(x.Logo)
+                        : null
                 })
-                .ToListAsync(cancellationToken);
+                .ToList();
         }
     }
 }

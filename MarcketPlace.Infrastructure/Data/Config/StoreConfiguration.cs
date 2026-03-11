@@ -49,6 +49,10 @@ namespace MarcketPlace.Infrastructure.Data.Config
                    .HasColumnType("decimal(11,8)")
                    .IsRequired();
 
+            builder.Property(x => x.Logo)
+                   .HasColumnType("varbinary(max)")
+                   .IsRequired(false);
+
             builder.Property(x => x.IsActive)
                    .HasDefaultValue(true)
                    .IsRequired();

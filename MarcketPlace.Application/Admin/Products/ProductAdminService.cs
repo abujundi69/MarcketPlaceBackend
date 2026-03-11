@@ -71,7 +71,7 @@ namespace MarcketPlace.Application.Admin.Products
                 NameEn = nameEn,
                 DescriptionAr = dto.DescriptionAr?.Trim(),
                 DescriptionEn = dto.DescriptionEn?.Trim(),
-                ImageUrl = dto.ImageUrl?.Trim(),
+                Image = dto.Image is { Length: > 0 } ? dto.Image : null,
                 Price = dto.Price,
                 StockQuantity = dto.StockQuantity,
                 MinStockQuantity = dto.MinStockQuantity,
@@ -147,7 +147,7 @@ namespace MarcketPlace.Application.Admin.Products
             product.NameEn = nameEn;
             product.DescriptionAr = dto.DescriptionAr?.Trim();
             product.DescriptionEn = dto.DescriptionEn?.Trim();
-            product.ImageUrl = dto.ImageUrl?.Trim();
+            product.Image = dto.Image is { Length: > 0 } ? dto.Image : null;
             product.Price = dto.Price;
             product.StockQuantity = dto.StockQuantity;
             product.MinStockQuantity = dto.MinStockQuantity;
@@ -173,7 +173,7 @@ namespace MarcketPlace.Application.Admin.Products
                     NameEn = x.NameEn,
                     DescriptionAr = x.DescriptionAr,
                     DescriptionEn = x.DescriptionEn,
-                    ImageUrl = x.ImageUrl,
+                    Image = x.Image,
                     Price = x.Price,
                     StockQuantity = x.StockQuantity,
                     MinStockQuantity = x.MinStockQuantity,
@@ -198,7 +198,7 @@ namespace MarcketPlace.Application.Admin.Products
                     NameEn = x.NameEn,
                     DescriptionAr = x.DescriptionAr,
                     DescriptionEn = x.DescriptionEn,
-                    ImageUrl = x.ImageUrl,
+                    Image = x.Image,
                     Price = x.Price,
                     StockQuantity = x.StockQuantity,
                     MinStockQuantity = x.MinStockQuantity,
@@ -224,7 +224,7 @@ namespace MarcketPlace.Application.Admin.Products
                     NameEn = x.NameEn,
                     DescriptionAr = x.DescriptionAr,
                     DescriptionEn = x.DescriptionEn,
-                    ImageUrl = x.ImageUrl,
+                    Image = x.Image,
                     Price = x.Price,
                     StockQuantity = x.StockQuantity,
                     MinStockQuantity = x.MinStockQuantity,
@@ -246,7 +246,7 @@ namespace MarcketPlace.Application.Admin.Products
                 NameEn = product.NameEn,
                 DescriptionAr = product.DescriptionAr,
                 DescriptionEn = product.DescriptionEn,
-                ImageUrl = product.ImageUrl,
+                Image = product.Image,
                 Price = product.Price,
                 StockQuantity = product.StockQuantity,
                 MinStockQuantity = product.MinStockQuantity,

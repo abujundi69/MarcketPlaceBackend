@@ -21,10 +21,10 @@ namespace MarcketPlace.Infrastructure.Data.Config
                    .IsUnicode(true)
                    .IsRequired();
 
-            builder.Property(x => x.ProductImageUrl)
-                   .HasMaxLength(1000)
-                   .IsUnicode(false)
+            builder.Property(x => x.ProductImage)
+                   .HasColumnType("varbinary(max)")
                    .IsRequired(false);
+
 
             builder.Property(x => x.UnitPrice)
                    .HasColumnType("decimal(18,2)")

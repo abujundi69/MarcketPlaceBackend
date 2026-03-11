@@ -35,32 +35,40 @@ namespace MarcketPlace.Application.Orders
 
             var cartItems = await _context.CartItems
                 .Include(x => x.Product)
-                    .ThenInclude(x => x.Store)
+                    .ThenInclude(x => x!.Store)
                 .Where(x => x.CustomerId == dto.CustomerId)
                 .ToListAsync(cancellationToken);
 
             if (!cartItems.Any())
                 throw new Exception("السلة فارغة.");
 
+            var validatedItems = new List<(CartItem CartItem, Product Product, Store Store)>();
+
             foreach (var cartItem in cartItems)
             {
                 if (cartItem.Quantity <= 0)
                     throw new Exception("يوجد منتج بكمية غير صالحة.");
 
-                if (cartItem.Product is null)
-                    throw new Exception("يوجد منتج غير صالح في السلة.");
+                var product = cartItem.Product
+                    ?? throw new Exception("يوجد منتج غير صالح في السلة.");
 
-                if (cartItem.Product.StoreId is null || cartItem.Product.Store is null)
-                    throw new Exception($"المنتج {cartItem.Product.NameAr} غير مربوط بمتجر.");
+                if (product.StoreId is null)
+                    throw new Exception($"المنتج {product.NameAr} غير مربوط بمتجر.");
 
-                if (!cartItem.Product.Store.IsActive)
-                    throw new Exception($"المتجر {cartItem.Product.Store.NameAr} غير نشط.");
+                var store = product.Store
+                    ?? throw new Exception($"المنتج {product.NameAr} غير مربوط بمتجر.");
 
-                if (cartItem.Product.StockQuantity < cartItem.Quantity)
-                    throw new Exception($"الكمية غير متوفرة للمنتج {cartItem.Product.NameAr}.");
+                if (!store.IsActive)
+                    throw new Exception($"المتجر {store.NameAr} غير نشط.");
+
+                if (product.StockQuantity < cartItem.Quantity)
+                    throw new Exception($"الكمية غير متوفرة للمنتج {product.NameAr}.");
+
+                validatedItems.Add((cartItem, product, store));
             }
 
-            var subtotal = cartItems.Sum(x => x.Product.Price * x.Quantity);
+            var utcNow = DateTime.UtcNow;
+            var subtotal = validatedItems.Sum(x => x.Product.Price * x.CartItem.Quantity);
             var deliveryFee = deliveryZone.DeliveryFee;
             var totalAmount = subtotal + deliveryFee;
 
@@ -80,7 +88,7 @@ namespace MarcketPlace.Application.Orders
                 Subtotal = subtotal,
                 DeliveryFee = deliveryFee,
                 TotalAmount = totalAmount,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = utcNow
             };
 
             _context.Orders.Add(order);
@@ -89,7 +97,9 @@ namespace MarcketPlace.Application.Orders
             order.OrderNumber = $"ORD-{DateTime.UtcNow:yyyyMMdd}-{order.Id:D6}";
             order.UpdatedAt = DateTime.UtcNow;
 
-            var itemsGroupedByStore = cartItems.GroupBy(x => x.Product.StoreId!.Value);
+            var itemsGroupedByStore = validatedItems
+                .GroupBy(x => x.Product.StoreId!.Value)
+                .ToList();
 
             foreach (var storeGroup in itemsGroupedByStore)
             {
@@ -98,16 +108,17 @@ namespace MarcketPlace.Application.Orders
                     OrderId = order.Id,
                     StoreId = storeGroup.Key,
                     Status = OrderStoreStatus.Pending,
-                    StoreSubtotal = storeGroup.Sum(x => x.Product.Price * x.Quantity),
-                    CreatedAt = DateTime.UtcNow
+                    StoreSubtotal = storeGroup.Sum(x => x.Product.Price * x.CartItem.Quantity),
+                    CreatedAt = utcNow
                 };
 
                 _context.OrderStores.Add(orderStore);
                 await _context.SaveChangesAsync(cancellationToken);
 
-                foreach (var cartItem in storeGroup)
+                foreach (var entry in storeGroup)
                 {
-                    var product = cartItem.Product;
+                    var cartItem = entry.CartItem;
+                    var product = entry.Product;
 
                     var orderItem = new OrderItem
                     {
@@ -115,17 +126,17 @@ namespace MarcketPlace.Application.Orders
                         ProductId = product.Id,
                         ProductNameAr = product.NameAr,
                         ProductNameEn = product.NameEn,
-                        ProductImageUrl = product.ImageUrl,
+                        ProductImage = product.Image,
                         UnitPrice = product.Price,
                         Quantity = cartItem.Quantity,
                         LineTotal = product.Price * cartItem.Quantity,
-                        CreatedAt = DateTime.UtcNow
+                        CreatedAt = utcNow
                     };
 
                     _context.OrderItems.Add(orderItem);
 
                     product.StockQuantity -= cartItem.Quantity;
-                    product.UpdatedAt = DateTime.UtcNow;
+                    product.UpdatedAt = utcNow;
                 }
             }
 

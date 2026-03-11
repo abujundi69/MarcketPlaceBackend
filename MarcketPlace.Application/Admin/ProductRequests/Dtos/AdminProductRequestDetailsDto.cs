@@ -21,7 +21,8 @@ namespace MarcketPlace.Application.Admin.ProductRequests.Dtos
         public string ProductNameEn { get; set; } = default!;
         public string? DescriptionAr { get; set; }
         public string? DescriptionEn { get; set; }
-        public string? ImageUrl { get; set; }
+
+        public byte[]? Image { get; set; }
 
         public decimal Price { get; set; }
         public int StockQuantity { get; set; }

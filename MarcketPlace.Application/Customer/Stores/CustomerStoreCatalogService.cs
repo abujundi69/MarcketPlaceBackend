@@ -57,7 +57,7 @@ namespace MarcketPlace.Application.Customer.Stores
                     NameEn = x.NameEn,
                     DescriptionAr = x.DescriptionAr,
                     DescriptionEn = x.DescriptionEn,
-                    ImageUrl = x.ImageUrl,
+                    Image = x.Image,
                     Price = x.Price,
                     StockQuantity = x.StockQuantity,
                     CategoryNameAr = x.Category.NameAr,
@@ -102,6 +102,64 @@ namespace MarcketPlace.Application.Customer.Stores
             }
 
             return result;
+        }
+        public async Task<IReadOnlyList<StoreListItemDto>> GetAllAsync(CancellationToken cancellationToken = default)
+        {
+            var stores = await _context.Stores
+                .AsNoTracking()
+                .Where(x => x.IsActive)
+                .OrderBy(x => x.NameAr)
+                .Select(x => new StoreListItemDto
+                {
+                    Id = x.Id,
+                    NameAr = x.NameAr,
+                    NameEn = x.NameEn,
+                    DescriptionAr = x.DescriptionAr,
+                    DescriptionEn = x.DescriptionEn,
+                    PhoneNumber = x.PhoneNumber,
+                    AddressText = x.AddressText,
+                    Latitude = x.Latitude,
+                    Longitude = x.Longitude,
+                    LogoBase64 = x.Logo != null && x.Logo.Length > 0
+                        ? Convert.ToBase64String(x.Logo)
+                        : null,
+                    HasLogo = x.Logo != null && x.Logo.Length > 0
+                })
+                .ToListAsync(cancellationToken);
+
+            return stores;
+        }
+
+        public async Task<StoreDetailsDto> GetByIdAsync(int id, CancellationToken cancellationToken = default)
+        {
+            var store = await _context.Stores
+                .AsNoTracking()
+                .Where(x => x.Id == id && x.IsActive)
+                .Select(x => new StoreDetailsDto
+                {
+                    Id = x.Id,
+                    VendorId = x.VendorId,
+                    NameAr = x.NameAr,
+                    NameEn = x.NameEn,
+                    DescriptionAr = x.DescriptionAr,
+                    DescriptionEn = x.DescriptionEn,
+                    PhoneNumber = x.PhoneNumber,
+                    AddressText = x.AddressText,
+                    Latitude = x.Latitude,
+                    Longitude = x.Longitude,
+                    IsActive = x.IsActive,
+                    LogoBase64 = x.Logo != null && x.Logo.Length > 0
+                        ? Convert.ToBase64String(x.Logo)
+                        : null,
+                    HasLogo = x.Logo != null && x.Logo.Length > 0,
+                    CreatedAt = x.CreatedAt
+                })
+                .FirstOrDefaultAsync(cancellationToken);
+
+            if (store is null)
+                throw new KeyNotFoundException("المتجر غير موجود.");
+
+            return store;
         }
     }
 }
