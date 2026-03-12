@@ -1,9 +1,11 @@
-﻿namespace MarcketPlace.Domain.Entities
+namespace MarcketPlace.Domain.Entities
 {
     public class Store
     {
         public int Id { get; set; }
         public int? VendorId { get; set; }
+        /// <summary>فئة المتجر (سوبر ماركت، مخابز، صيدلية، لحوم، إلخ).</summary>
+        public int? CategoryId { get; set; }
 
         public string NameAr { get; set; } = default!;
         public string NameEn { get; set; } = default!;
@@ -24,6 +26,7 @@
         public DateTime? UpdatedAt { get; set; }
 
         public Vendor? Vendor { get; set; }
+        public Category? Category { get; set; }
         public ICollection<StoreWorkingHour> WorkingHours { get; set; } = new List<StoreWorkingHour>();
         public ICollection<Product> Products { get; set; } = new List<Product>();
         public ICollection<OrderStore> OrderStores { get; set; } = new List<OrderStore>();

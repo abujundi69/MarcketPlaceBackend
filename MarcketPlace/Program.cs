@@ -1,5 +1,6 @@
 using MarcketPlace.Application;
 using MarcketPlace.Infrastructure;
+using MarcketPlace.Infrastructure.Data;
 using MarcketPlace.Middlewares;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -118,5 +119,11 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    await DbInitializer.EnsureSuperAdminExistsAsync(db, resetPasswordInDev: app.Environment.IsDevelopment());
+}
 
 app.Run();

@@ -1,4 +1,4 @@
-﻿namespace MarcketPlace.Application.Admin.Stores.Dtos
+namespace MarcketPlace.Application.Admin.Stores.Dtos
 {
     public class StoreAdminDetailsDto
     {
@@ -17,6 +17,10 @@
         public decimal Longitude { get; set; }
 
         public bool IsActive { get; set; }
+
+        public int? CategoryId { get; set; }
+        public string? CategoryNameAr { get; set; }
+        public string? CategoryNameEn { get; set; }
 
         public int? VendorId { get; set; }
         public string? VendorName { get; set; }

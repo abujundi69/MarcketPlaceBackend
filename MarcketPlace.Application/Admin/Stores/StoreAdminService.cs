@@ -1,4 +1,4 @@
-﻿using MarcketPlace.Application.Admin.Stores.Dtos;
+using MarcketPlace.Application.Admin.Stores.Dtos;
 using MarcketPlace.Domain.Entities;
 using MarcketPlace.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -48,6 +48,17 @@ namespace MarcketPlace.Application.Admin.Stores
                     throw new InvalidOperationException("هذا التاجر مرتبط بالفعل بمتجر.");
             }
 
+            int? categoryId = null;
+            if (dto.CategoryId.HasValue && dto.CategoryId.Value > 0)
+            {
+                var categoryExists = await _context.Categories
+                    .AsNoTracking()
+                    .AnyAsync(x => x.Id == dto.CategoryId.Value && x.IsActive, cancellationToken);
+                if (!categoryExists)
+                    throw new InvalidOperationException("الفئة المحددة غير موجودة أو غير نشطة.");
+                categoryId = dto.CategoryId.Value;
+            }
+
             var logoBytes = ParseLogoBase64(dto.LogoBase64);
 
             var store = new Store
@@ -63,7 +74,8 @@ namespace MarcketPlace.Application.Admin.Stores
                 Logo = logoBytes,
                 IsActive = dto.IsActive,
                 CreatedAt = DateTime.UtcNow,
-                VendorId = vendorId
+                VendorId = vendorId,
+                CategoryId = categoryId
             };
 
             _context.Stores.Add(store);
@@ -124,6 +136,7 @@ namespace MarcketPlace.Application.Admin.Stores
                 .AsNoTracking()
                 .Include(x => x.Vendor)
                     .ThenInclude(x => x.User)
+                .Include(x => x.Category)
                 .Include(x => x.StoreRatings)
                 .FirstOrDefaultAsync(x => x.Id == storeId, cancellationToken);
 
@@ -147,6 +160,9 @@ namespace MarcketPlace.Application.Admin.Stores
                 Latitude = store.Latitude,
                 Longitude = store.Longitude,
                 IsActive = store.IsActive,
+                CategoryId = store.CategoryId,
+                CategoryNameAr = store.Category?.NameAr,
+                CategoryNameEn = store.Category?.NameEn,
                 VendorId = store.VendorId,
                 VendorName = store.Vendor?.User?.FullName,
                 VendorPhoneNumber = store.Vendor?.User?.PhoneNumber,
@@ -207,6 +223,18 @@ namespace MarcketPlace.Application.Admin.Stores
                     throw new InvalidOperationException("هذا التاجر مرتبط بالفعل بمتجر آخر.");
             }
 
+            int? categoryId = null;
+            if (dto.CategoryId.HasValue && dto.CategoryId.Value > 0)
+            {
+                var categoryExists = await _context.Categories
+                    .AsNoTracking()
+                    .AnyAsync(x => x.Id == dto.CategoryId.Value && x.IsActive, cancellationToken);
+                if (!categoryExists)
+                    throw new InvalidOperationException("الفئة المحددة غير موجودة أو غير نشطة.");
+                categoryId = dto.CategoryId.Value;
+            }
+
+            store.CategoryId = categoryId;
             store.NameAr = nameAr;
             store.NameEn = nameEn;
             store.DescriptionAr = dto.DescriptionAr?.Trim();

@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace MarcketPlace.Application.Admin.Stores.Dtos
 {
@@ -29,6 +29,9 @@ namespace MarcketPlace.Application.Admin.Stores.Dtos
         public bool IsActive { get; set; }
 
         public int? VendorId { get; set; }
+
+        [Range(1, int.MaxValue)]
+        public int? CategoryId { get; set; }
 
         public string? LogoBase64 { get; set; }
         public bool RemoveLogo { get; set; }

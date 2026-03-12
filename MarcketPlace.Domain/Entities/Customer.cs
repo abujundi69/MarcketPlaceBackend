@@ -1,4 +1,4 @@
-﻿namespace MarcketPlace.Domain.Entities
+namespace MarcketPlace.Domain.Entities
 {
     public class Customer
     {
@@ -16,6 +16,7 @@
         public DeliveryZone? DefaultDeliveryZone { get; set; }
 
         public ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
+        public ICollection<CustomerFavorite> Favorites { get; set; } = new List<CustomerFavorite>();
         public ICollection<Order> Orders { get; set; } = new List<Order>();
         public ICollection<StoreRating> StoreRatings { get; set; } = new List<StoreRating>();
         public ICollection<DriverRating> DriverRatings { get; set; } = new List<DriverRating>();

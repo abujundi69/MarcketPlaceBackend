@@ -1,4 +1,4 @@
-﻿using MarcketPlace.Application.Customer.Cart.Dtos;
+using MarcketPlace.Application.Customer.Cart.Dtos;
 using MarcketPlace.Domain.Entities;
 using MarcketPlace.Domain.Enums;
 using MarcketPlace.Infrastructure.Data;
@@ -19,17 +19,26 @@ namespace MarcketPlace.Application.Customer.Cart
             int customerUserId,
             CancellationToken cancellationToken = default)
         {
-            var customerId = await GetCustomerIdAsync(customerUserId, cancellationToken);
+            try
+            {
+                var customerId = await TryGetCustomerIdAsync(customerUserId, cancellationToken);
+                if (customerId is null)
+                    return BuildCartDto(new List<CartItem>());
 
-            var cartItems = await _context.CartItems
-                .AsNoTracking()
-                .Include(x => x.Product)
-                    .ThenInclude(x => x!.Store)
-                .Where(x => x.CustomerId == customerId)
-                .OrderBy(x => x.CreatedAt)
-                .ToListAsync(cancellationToken);
+                var cartItems = await _context.CartItems
+                    .AsNoTracking()
+                    .Include(x => x.Product)
+                        .ThenInclude(x => x!.Store)
+                    .Where(x => x.CustomerId == customerId.Value)
+                    .OrderBy(x => x.CreatedAt)
+                    .ToListAsync(cancellationToken);
 
-            return BuildCartDto(cartItems);
+                return BuildCartDto(cartItems);
+            }
+            catch
+            {
+                return BuildCartDto(new List<CartItem>());
+            }
         }
 
         public async Task<CustomerCartDto> AddItemAsync(
@@ -189,6 +198,16 @@ namespace MarcketPlace.Application.Customer.Cart
             await _context.SaveChangesAsync(cancellationToken);
         }
 
+        private async Task<int?> TryGetCustomerIdAsync(
+            int customerUserId,
+            CancellationToken cancellationToken)
+        {
+            var customer = await _context.Customers
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.UserId == customerUserId, cancellationToken);
+            return customer?.Id;
+        }
+
         private async Task<int> GetCustomerIdAsync(
             int customerUserId,
             CancellationToken cancellationToken)
@@ -205,7 +224,8 @@ namespace MarcketPlace.Application.Customer.Cart
 
         private static CustomerCartDto BuildCartDto(List<CartItem> cartItems)
         {
-            if (cartItems.Count == 0)
+            var validItems = cartItems.Where(x => x.Product != null).ToList();
+            if (validItems.Count == 0)
             {
                 return new CustomerCartDto
                 {
@@ -216,10 +236,10 @@ namespace MarcketPlace.Application.Customer.Cart
                 };
             }
 
-            var stores = cartItems
+            var stores = validItems
                 .GroupBy(x => new
                 {
-                    StoreId = x.Product.StoreId ?? 0,
+                    StoreId = x.Product!.StoreId ?? 0,
                     StoreNameAr = x.Product.Store?.NameAr ?? "متجر غير معروف",
                     StoreNameEn = x.Product.Store?.NameEn ?? "Unknown Store"
                 })
@@ -228,12 +248,12 @@ namespace MarcketPlace.Application.Customer.Cart
                     StoreId = g.Key.StoreId,
                     StoreNameAr = g.Key.StoreNameAr,
                     StoreNameEn = g.Key.StoreNameEn,
-                    StoreSubtotal = g.Sum(i => i.Product.Price * i.Quantity),
+                    StoreSubtotal = g.Sum(i => i.Product!.Price * i.Quantity),
                     Items = g.Select(i => new CustomerCartItemDto
                     {
                         CartItemId = i.Id,
                         ProductId = i.ProductId,
-                        ProductNameAr = i.Product.NameAr,
+                        ProductNameAr = i.Product!.NameAr,
                         ProductNameEn = i.Product.NameEn,
                         ProductImage = i.Product.Image,
                         UnitPrice = i.Product.Price,
@@ -247,7 +267,7 @@ namespace MarcketPlace.Application.Customer.Cart
 
             return new CustomerCartDto
             {
-                TotalItemsCount = cartItems.Sum(x => x.Quantity),
+                TotalItemsCount = validItems.Sum(x => x.Quantity),
                 StoresCount = stores.Count,
                 Subtotal = stores.Sum(x => x.StoreSubtotal),
                 Stores = stores

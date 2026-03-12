@@ -143,6 +143,35 @@ namespace MarcketPlace.Infrastructure.Migrations
                     b.ToTable("Customers", (string)null);
                 });
 
+            modelBuilder.Entity("MarcketPlace.Domain.Entities.CustomerFavorite", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("SYSUTCDATETIME()");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("CustomerId", "ProductId")
+                        .IsUnique();
+
+                    b.ToTable("CustomerFavorites", (string)null);
+                });
+
             modelBuilder.Entity("MarcketPlace.Domain.Entities.DeliveryZone", b =>
                 {
                     b.Property<int>("Id")
@@ -727,6 +756,9 @@ namespace MarcketPlace.Infrastructure.Migrations
                         .IsUnicode(true)
                         .HasColumnType("nvarchar(500)");
 
+                    b.Property<int?>("CategoryId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
@@ -781,6 +813,8 @@ namespace MarcketPlace.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
 
                     b.HasIndex("VendorId");
 
@@ -879,6 +913,11 @@ namespace MarcketPlace.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CustomerPromoMessage")
+                        .HasMaxLength(1000)
+                        .IsUnicode(true)
+                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<string>("FooterAr")
                         .IsRequired()
@@ -1057,6 +1096,25 @@ namespace MarcketPlace.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("MarcketPlace.Domain.Entities.CustomerFavorite", b =>
+                {
+                    b.HasOne("MarcketPlace.Domain.Entities.Customer", "Customer")
+                        .WithMany("Favorites")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("MarcketPlace.Domain.Entities.Product", "Product")
+                        .WithMany("CustomerFavorites")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("MarcketPlace.Domain.Entities.Driver", b =>
                 {
                     b.HasOne("MarcketPlace.Domain.Entities.User", "User")
@@ -1231,10 +1289,17 @@ namespace MarcketPlace.Infrastructure.Migrations
 
             modelBuilder.Entity("MarcketPlace.Domain.Entities.Store", b =>
                 {
+                    b.HasOne("MarcketPlace.Domain.Entities.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("MarcketPlace.Domain.Entities.Vendor", "Vendor")
                         .WithMany("Stores")
                         .HasForeignKey("VendorId")
                         .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Category");
 
                     b.Navigation("Vendor");
                 });
@@ -1301,6 +1366,8 @@ namespace MarcketPlace.Infrastructure.Migrations
 
                     b.Navigation("DriverRatings");
 
+                    b.Navigation("Favorites");
+
                     b.Navigation("Orders");
 
                     b.Navigation("StoreRatings");
@@ -1335,6 +1402,8 @@ namespace MarcketPlace.Infrastructure.Migrations
             modelBuilder.Entity("MarcketPlace.Domain.Entities.Product", b =>
                 {
                     b.Navigation("CartItems");
+
+                    b.Navigation("CustomerFavorites");
 
                     b.Navigation("OrderItems");
                 });

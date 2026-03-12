@@ -1,4 +1,4 @@
-﻿using System.Security.Claims;
+using System.Security.Claims;
 using MarcketPlace.Application.Customer.Cart;
 using MarcketPlace.Application.Customer.Cart.Dtos;
 using MarcketPlace.Domain.Enums;
@@ -26,8 +26,21 @@ namespace MarcketPlace.Controllers
             if (userId is null)
                 return Unauthorized();
 
-            var result = await _customerCartService.GetCartAsync(userId.Value, cancellationToken);
-            return Ok(result);
+            try
+            {
+                var result = await _customerCartService.GetCartAsync(userId.Value, cancellationToken);
+                return Ok(result);
+            }
+            catch
+            {
+                return Ok(new CustomerCartDto
+                {
+                    TotalItemsCount = 0,
+                    StoresCount = 0,
+                    Subtotal = 0,
+                    Stores = new List<CustomerCartStoreDto>()
+                });
+            }
         }
 
         [HttpPost("items")]

@@ -9,6 +9,8 @@ namespace MarcketPlace.Application.Vendor.ProductRequests
 {
     public class VendorProductRequestService : IVendorProductRequestService
     {
+        private const int MaxImageSizeInBytes = 5 * 1024 * 1024; // 5 MB
+
         private readonly AppDbContext _context;
         private readonly IAdminNotificationService _notificationService;
 
@@ -89,6 +91,8 @@ namespace MarcketPlace.Application.Vendor.ProductRequests
             if (duplicateProductExists)
                 throw new Exception("يوجد منتج بنفس الاسم العربي أو الإنجليزي داخل نفس المتجر والتصنيف.");
 
+            var imageBytes = ParseImageBase64(dto.ImageBase64);
+
             var request = new ProductRequest
             {
                 VendorId = vendorId,
@@ -98,7 +102,7 @@ namespace MarcketPlace.Application.Vendor.ProductRequests
                 NameEn = nameEn,
                 DescriptionAr = dto.DescriptionAr?.Trim(),
                 DescriptionEn = dto.DescriptionEn?.Trim(),
-                Image = dto.Image is { Length: > 0 } ? dto.Image : null,
+                Image = imageBytes,
                 Price = dto.Price,
                 StockQuantity = dto.StockQuantity,
                 MinStockQuantity = dto.MinStockQuantity,
@@ -178,6 +182,31 @@ namespace MarcketPlace.Application.Vendor.ProductRequests
                 throw new Exception("المستخدم الحالي لا يملك حساب تاجر.");
 
             return vendorId.Value;
+        }
+
+        private static byte[]? ParseImageBase64(string? imageBase64)
+        {
+            if (string.IsNullOrWhiteSpace(imageBase64))
+                return null;
+
+            var cleaned = imageBase64.Trim();
+            var commaIndex = cleaned.IndexOf(',');
+            if (cleaned.StartsWith("data:", StringComparison.OrdinalIgnoreCase) && commaIndex >= 0)
+                cleaned = cleaned[(commaIndex + 1)..];
+
+            try
+            {
+                var bytes = Convert.FromBase64String(cleaned);
+                if (bytes.Length == 0)
+                    return null;
+                if (bytes.Length > MaxImageSizeInBytes)
+                    throw new InvalidOperationException("حجم صورة المنتج أكبر من الحد المسموح (5 ميجابايت).");
+                return bytes;
+            }
+            catch (FormatException)
+            {
+                throw new InvalidOperationException("صورة المنتج المرسلة ليست Base64 صالح.");
+            }
         }
 
         private static VendorProductRequestDto MapToDto(ProductRequest request)

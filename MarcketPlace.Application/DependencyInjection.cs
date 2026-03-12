@@ -13,6 +13,7 @@ using MarcketPlace.Application.Admin.SystemSettings;
 using MarcketPlace.Application.Admin.Vendors;
 using MarcketPlace.Application.Auth;
 using MarcketPlace.Application.Customer.Cart;
+using MarcketPlace.Application.Customer.Favorites;
 using MarcketPlace.Application.Customer.Locations;
 using MarcketPlace.Application.Customer.Orders;
 using MarcketPlace.Application.Customer.Stores;
@@ -58,6 +59,7 @@ namespace MarcketPlace.Application
             services.AddScoped<IMyAccountService, MyAccountService>();
             services.AddScoped<IAdminDashboardService, AdminDashboardService>();
             services.AddScoped<ICustomerCartService, CustomerCartService>();
+            services.AddScoped<ICustomerFavoritesService, CustomerFavoritesService>();
             services.AddScoped<ICustomerStoreCatalogService, CustomerStoreCatalogService>();
             services.AddScoped<IDriverOrderService, DriverOrderService>();
             services.AddScoped<ICustomerLocationService, CustomerLocationService>();

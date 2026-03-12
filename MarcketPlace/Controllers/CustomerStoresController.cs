@@ -1,4 +1,4 @@
-﻿using MarcketPlace.Application.Customer.Stores;
+using MarcketPlace.Application.Customer.Stores;
 using MarcketPlace.Application.Customer.Stores.Dtos;
 using MarcketPlace.Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
@@ -18,10 +18,19 @@ namespace MarcketPlace.Controllers
             _customerStoreService = customerStoreService;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<IReadOnlyList<StoreListItemDto>>> GetAll(CancellationToken cancellationToken)
+        [HttpGet("categories")]
+        public async Task<ActionResult<IReadOnlyList<StoreCategoryDto>>> GetCategories(CancellationToken cancellationToken)
         {
-            var result = await _customerStoreService.GetAllAsync(cancellationToken);
+            var result = await _customerStoreService.GetStoreCategoriesAsync(cancellationToken);
+            return Ok(result);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IReadOnlyList<StoreListItemDto>>> GetAll(
+            [FromQuery] int? categoryId,
+            CancellationToken cancellationToken)
+        {
+            var result = await _customerStoreService.GetAllAsync(categoryId, cancellationToken);
             return Ok(result);
         }
 

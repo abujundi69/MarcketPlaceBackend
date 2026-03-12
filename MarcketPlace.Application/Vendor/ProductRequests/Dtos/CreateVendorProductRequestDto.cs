@@ -1,4 +1,4 @@
-﻿namespace MarcketPlace.Application.Vendor.ProductRequests.Dtos
+namespace MarcketPlace.Application.Vendor.ProductRequests.Dtos
 {
     public class CreateVendorProductRequestDto
     {
@@ -9,7 +9,8 @@
         public string NameEn { get; set; } = default!;
         public string? DescriptionAr { get; set; }
         public string? DescriptionEn { get; set; }
-        public byte[]? Image { get; set; }
+        /// <summary>صورة المنتج بصيغة Base64 (يدعم data:image/...;base64,... أو base64 خام)</summary>
+        public string? ImageBase64 { get; set; }
 
         public decimal Price { get; set; }
         public int StockQuantity { get; set; }

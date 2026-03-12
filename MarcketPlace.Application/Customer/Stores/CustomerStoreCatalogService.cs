@@ -1,4 +1,4 @@
-﻿using MarcketPlace.Application.Customer.Stores.Dtos;
+using MarcketPlace.Application.Customer.Stores.Dtos;
 using MarcketPlace.Domain.Enums;
 using MarcketPlace.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -103,11 +103,34 @@ namespace MarcketPlace.Application.Customer.Stores
 
             return result;
         }
-        public async Task<IReadOnlyList<StoreListItemDto>> GetAllAsync(CancellationToken cancellationToken = default)
+
+        public async Task<IReadOnlyList<StoreCategoryDto>> GetStoreCategoriesAsync(CancellationToken cancellationToken = default)
         {
-            var stores = await _context.Stores
+            return await _context.Categories
                 .AsNoTracking()
                 .Where(x => x.IsActive)
+                .OrderBy(x => x.NameAr)
+                .Select(x => new StoreCategoryDto
+                {
+                    Id = x.Id,
+                    NameAr = x.NameAr,
+                    NameEn = x.NameEn
+                })
+                .ToListAsync(cancellationToken);
+        }
+
+        public async Task<IReadOnlyList<StoreListItemDto>> GetAllAsync(int? categoryId = null, CancellationToken cancellationToken = default)
+        {
+            var query = _context.Stores
+                .AsNoTracking()
+                .Where(x => x.IsActive);
+
+            if (categoryId.HasValue && categoryId.Value > 0)
+            {
+                query = query.Where(x => x.CategoryId == categoryId.Value);
+            }
+
+            var stores = await query
                 .OrderBy(x => x.NameAr)
                 .Select(x => new StoreListItemDto
                 {

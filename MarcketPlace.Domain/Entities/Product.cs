@@ -1,4 +1,4 @@
-﻿using MarcketPlace.Domain.Enums;
+using MarcketPlace.Domain.Enums;
 
 namespace MarcketPlace.Domain.Entities
 {
@@ -27,6 +27,7 @@ namespace MarcketPlace.Domain.Entities
         public Category Category { get; set; } = default!;
 
         public ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
+        public ICollection<CustomerFavorite> CustomerFavorites { get; set; } = new List<CustomerFavorite>();
         public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
     }
 }

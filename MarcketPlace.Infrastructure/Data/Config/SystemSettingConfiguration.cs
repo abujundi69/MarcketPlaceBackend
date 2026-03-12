@@ -1,4 +1,4 @@
-﻿using MarcketPlace.Domain.Entities;
+using MarcketPlace.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -30,6 +30,11 @@ namespace MarcketPlace.Infrastructure.Data.Config
                    .HasMaxLength(500)
                    .IsUnicode(true)
                    .IsRequired();
+
+            builder.Property(x => x.CustomerPromoMessage)
+                   .HasMaxLength(1000)
+                   .IsUnicode(true)
+                   .IsRequired(false);
 
             builder.Property(x => x.Logo)
                    .HasColumnType("varbinary(max)")

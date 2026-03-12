@@ -1,4 +1,4 @@
-﻿using MarcketPlace.Application.Admin.SystemSettings.Dtos;
+using MarcketPlace.Application.Admin.SystemSettings.Dtos;
 using MarcketPlace.Domain.Entities;
 using MarcketPlace.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -29,6 +29,7 @@ namespace MarcketPlace.Application.Admin.SystemSettings
                     SystemNameEn = "System Name",
                     FooterAr = "تذييل النظام",
                     FooterEn = "System Footer",
+                    CustomerPromoMessage = null,
                     Logo = null,
                     UpdatedAt = DateTime.UtcNow
                 };
@@ -71,6 +72,7 @@ namespace MarcketPlace.Application.Admin.SystemSettings
                     SystemNameEn = systemNameEn,
                     FooterAr = footerAr,
                     FooterEn = footerEn,
+                    CustomerPromoMessage = string.IsNullOrWhiteSpace(dto.CustomerPromoMessage) ? null : dto.CustomerPromoMessage.Trim(),
                     Logo = dto.Logo,
                     UpdatedAt = DateTime.UtcNow
                 };
@@ -83,6 +85,7 @@ namespace MarcketPlace.Application.Admin.SystemSettings
                 setting.SystemNameEn = systemNameEn;
                 setting.FooterAr = footerAr;
                 setting.FooterEn = footerEn;
+                setting.CustomerPromoMessage = string.IsNullOrWhiteSpace(dto.CustomerPromoMessage) ? null : dto.CustomerPromoMessage.Trim();
                 setting.Logo = dto.Logo;
                 setting.UpdatedAt = DateTime.UtcNow;
             }
@@ -90,6 +93,16 @@ namespace MarcketPlace.Application.Admin.SystemSettings
             await _context.SaveChangesAsync(cancellationToken);
 
             return MapToDto(setting);
+        }
+
+        public async Task<string?> GetCustomerPromoMessageAsync(CancellationToken cancellationToken = default)
+        {
+            var setting = await _context.SystemSettings
+                .AsNoTracking()
+                .OrderBy(x => x.Id)
+                .Select(x => x.CustomerPromoMessage)
+                .FirstOrDefaultAsync(cancellationToken);
+            return setting;
         }
 
         private static SystemSettingDto MapToDto(SystemSetting setting)
@@ -101,6 +114,7 @@ namespace MarcketPlace.Application.Admin.SystemSettings
                 SystemNameEn = setting.SystemNameEn,
                 FooterAr = setting.FooterAr,
                 FooterEn = setting.FooterEn,
+                CustomerPromoMessage = setting.CustomerPromoMessage,
                 Logo = setting.Logo,
                 UpdatedAt = setting.UpdatedAt
             };

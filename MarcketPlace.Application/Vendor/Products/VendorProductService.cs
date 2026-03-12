@@ -1,4 +1,4 @@
-﻿using MarcketPlace.Application.Vendor.Products.Dtos;
+using MarcketPlace.Application.Vendor.Products.Dtos;
 using MarcketPlace.Domain.Entities;
 using MarcketPlace.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -109,6 +109,8 @@ namespace MarcketPlace.Application.Vendor.Products
 
             product.Price = dto.Price;
             product.StockQuantity = dto.StockQuantity;
+            if (dto.Image is { Length: > 0 })
+                product.Image = dto.Image;
             product.UpdatedAt = DateTime.UtcNow;
 
             await _context.SaveChangesAsync(cancellationToken);

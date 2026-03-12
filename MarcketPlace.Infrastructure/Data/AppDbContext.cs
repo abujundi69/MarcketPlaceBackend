@@ -1,4 +1,4 @@
-﻿using MarcketPlace.Domain.Entities;
+using MarcketPlace.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace MarcketPlace.Infrastructure.Data
@@ -19,6 +19,7 @@ namespace MarcketPlace.Infrastructure.Data
         public DbSet<Category> Categories { get; set; } = default!;
         public DbSet<Product> Products { get; set; } = default!;
         public DbSet<CartItem> CartItems { get; set; } = default!;
+        public DbSet<CustomerFavorite> CustomerFavorites { get; set; } = default!;
         public DbSet<Order> Orders { get; set; } = default!;
         public DbSet<OrderStore> OrderStores { get; set; } = default!;
         public DbSet<OrderItem> OrderItems { get; set; } = default!;
