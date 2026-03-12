@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MarcketPlace.Infrastructure")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b059c736558f4a27e908555ea65fd455402dce17")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+60e5ef581d0e35b7227faebdb07aaeda716b726d")]
 [assembly: System.Reflection.AssemblyProductAttribute("MarcketPlace.Infrastructure")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MarcketPlace.Infrastructure")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
