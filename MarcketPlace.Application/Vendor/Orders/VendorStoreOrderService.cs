@@ -57,7 +57,9 @@ namespace MarcketPlace.Application.Vendor.Orders
                     CreatedAt = x.Order.CreatedAt,
                     DriverAssignedAt = x.Order.DriverAssignedAt,
                     PickedUpAt = x.Order.PickedUpAt,
-                    DeliveredAt = x.Order.DeliveredAt
+                    DeliveredAt = x.Order.DeliveredAt,
+                    CancelledAt = x.Order.CancelledAt,
+                    CancelReason = x.Order.CancelReason
                 })
                 .ToListAsync(cancellationToken);
 
@@ -105,6 +107,8 @@ namespace MarcketPlace.Application.Vendor.Orders
                     DriverAssignedAt = x.Order.DriverAssignedAt,
                     PickedUpAt = x.Order.PickedUpAt,
                     DeliveredAt = x.Order.DeliveredAt,
+                    CancelledAt = x.Order.CancelledAt,
+                    CancelReason = x.Order.CancelReason,
 
                     Items = x.OrderItems
                         .OrderBy(i => i.Id)
@@ -143,6 +147,7 @@ namespace MarcketPlace.Application.Vendor.Orders
                 throw new InvalidOperationException("حالة الطلب الخاصة بالمتجر غير صحيحة.");
 
             var orderStore = await _context.OrderStores
+                .Include(x => x.Order)
                 .FirstOrDefaultAsync(x =>
                     x.Id == orderStoreId &&
                     x.StoreId == storeId &&
@@ -151,6 +156,9 @@ namespace MarcketPlace.Application.Vendor.Orders
 
             if (orderStore is null)
                 throw new KeyNotFoundException("الطلب الخاص بهذا المتجر غير موجود أو لا يتبع لهذا التاجر.");
+
+            if (orderStore.Order.Status == OrderStatus.Cancelled)
+                throw new InvalidOperationException("لا يمكن تعديل طلب تم إلغاؤه.");
 
             ValidateTransition(orderStore.Status, dto.Status, dto.Note);
 

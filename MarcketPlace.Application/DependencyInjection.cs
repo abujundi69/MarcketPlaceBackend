@@ -16,6 +16,7 @@ using MarcketPlace.Application.Customer.Cart;
 using MarcketPlace.Application.Customer.Favorites;
 using MarcketPlace.Application.Customer.Locations;
 using MarcketPlace.Application.Customer.Orders;
+using MarcketPlace.Application.Customer.Ratings;
 using MarcketPlace.Application.Customer.Stores;
 using MarcketPlace.Application.Driver.Orders;
 using MarcketPlace.Application.Orders;
@@ -63,6 +64,7 @@ namespace MarcketPlace.Application
             services.AddScoped<ICustomerStoreCatalogService, CustomerStoreCatalogService>();
             services.AddScoped<IDriverOrderService, DriverOrderService>();
             services.AddScoped<ICustomerLocationService, CustomerLocationService>();
+            services.AddScoped<ICustomerRatingService, CustomerRatingService>();
             return services;
         }
     }

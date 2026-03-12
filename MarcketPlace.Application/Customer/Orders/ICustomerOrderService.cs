@@ -17,5 +17,10 @@ namespace MarcketPlace.Application.Customer.Orders
             int customerUserId,
             int orderId,
             CancellationToken cancellationToken = default);
+        Task<CustomerOrderDetailsDto> CancelAsync(
+            int customerUserId,
+            int orderId,
+            CancelCustomerOrderDto dto,
+            CancellationToken cancellationToken = default);
     }
 }

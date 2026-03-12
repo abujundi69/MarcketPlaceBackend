@@ -30,6 +30,56 @@ namespace MarcketPlace.Controllers
             var result = await _vendorStoreService.GetMyStoresAsync(userId.Value, cancellationToken);
             return Ok(result);
         }
+        [HttpGet("working-hours")]
+        public async Task<ActionResult<IReadOnlyList<VendorStoreWorkingHoursDto>>> GetMyStoresWorkingHours(
+           CancellationToken cancellationToken)
+        {
+            var userId = GetCurrentUserId();
+            if (userId is null)
+                return Unauthorized();
+
+            var result = await _vendorStoreService.GetMyStoresWorkingHoursAsync(
+                userId.Value,
+                cancellationToken);
+
+            return Ok(result);
+        }
+
+        [HttpGet("{storeId:int}/working-hours")]
+        public async Task<ActionResult<VendorStoreWorkingHoursDto>> GetStoreWorkingHours(
+            int storeId,
+            CancellationToken cancellationToken)
+        {
+            var userId = GetCurrentUserId();
+            if (userId is null)
+                return Unauthorized();
+
+            var result = await _vendorStoreService.GetStoreWorkingHoursAsync(
+                userId.Value,
+                storeId,
+                cancellationToken);
+
+            return Ok(result);
+        }
+
+        [HttpPut("{storeId:int}/working-hours")]
+        public async Task<ActionResult<VendorStoreWorkingHoursDto>> UpdateStoreWorkingHours(
+            int storeId,
+            [FromBody] UpdateVendorStoreWorkingHoursDto dto,
+            CancellationToken cancellationToken)
+        {
+            var userId = GetCurrentUserId();
+            if (userId is null)
+                return Unauthorized();
+
+            var result = await _vendorStoreService.UpdateStoreWorkingHoursAsync(
+                userId.Value,
+                storeId,
+                dto,
+                cancellationToken);
+
+            return Ok(result);
+        }
 
         private int? GetCurrentUserId()
         {

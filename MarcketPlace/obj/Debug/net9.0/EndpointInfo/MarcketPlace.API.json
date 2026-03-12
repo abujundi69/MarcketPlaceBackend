@@ -2474,6 +2474,232 @@
         }
       }
     },
+    "/api/customer/orders/{orderId}/cancel": {
+      "post": {
+        "tags": [
+          "CustomerOrders"
+        ],
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CancelCustomerOrderDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CancelCustomerOrderDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CancelCustomerOrderDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerOrderDetailsDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerOrderDetailsDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerOrderDetailsDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/customer/orders/{orderId}/rating-availability": {
+      "get": {
+        "tags": [
+          "CustomerRatings"
+        ],
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerOrderRatingAvailabilityDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerOrderRatingAvailabilityDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerOrderRatingAvailabilityDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/customer/orders/{orderId}/driver-rating": {
+      "post": {
+        "tags": [
+          "CustomerRatings"
+        ],
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateDriverRatingDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateDriverRatingDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateDriverRatingDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerDriverRatingDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerDriverRatingDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerDriverRatingDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/customer/orders/{orderId}/stores/{storeId}/rating": {
+      "post": {
+        "tags": [
+          "CustomerRatings"
+        ],
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "storeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateStoreRatingDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateStoreRatingDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateStoreRatingDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerStoreRatingDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerStoreRatingDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerStoreRatingDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/customer/stores/{storeId}/products": {
       "get": {
         "tags": [
@@ -3291,6 +3517,141 @@
           }
         }
       }
+    },
+    "/api/vendor/stores/working-hours": {
+      "get": {
+        "tags": [
+          "VendorStores"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/VendorStoreWorkingHoursDto"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/VendorStoreWorkingHoursDto"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/VendorStoreWorkingHoursDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/vendor/stores/{storeId}/working-hours": {
+      "get": {
+        "tags": [
+          "VendorStores"
+        ],
+        "parameters": [
+          {
+            "name": "storeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendorStoreWorkingHoursDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendorStoreWorkingHoursDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendorStoreWorkingHoursDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "VendorStores"
+        ],
+        "parameters": [
+          {
+            "name": "storeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateVendorStoreWorkingHoursDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateVendorStoreWorkingHoursDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateVendorStoreWorkingHoursDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendorStoreWorkingHoursDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendorStoreWorkingHoursDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendorStoreWorkingHoursDto"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -3592,6 +3953,16 @@
         },
         "additionalProperties": false
       },
+      "CancelCustomerOrderDto": {
+        "type": "object",
+        "properties": {
+          "cancelReason": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "CategoryDto": {
         "type": "object",
         "properties": {
@@ -3753,6 +4124,20 @@
         },
         "additionalProperties": false
       },
+      "CreateDriverRatingDto": {
+        "type": "object",
+        "properties": {
+          "score": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "comment": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "CreateProductDto": {
         "type": "object",
         "properties": {
@@ -3857,6 +4242,24 @@
             "minimum": 1,
             "type": "integer",
             "format": "int32",
+            "nullable": true
+          },
+          "logoBase64": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateStoreRatingDto": {
+        "type": "object",
+        "properties": {
+          "score": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "comment": {
+            "type": "string",
             "nullable": true
           }
         },
@@ -4167,6 +4570,40 @@
         },
         "additionalProperties": false
       },
+      "CustomerDriverRatingDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "orderId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "driverId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "customerId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "score": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "comment": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
       "CustomerListItemDto": {
         "type": "object",
         "properties": {
@@ -4406,6 +4843,59 @@
         },
         "additionalProperties": false
       },
+      "CustomerOrderRatingAvailabilityDto": {
+        "type": "object",
+        "properties": {
+          "orderId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "orderStatus": {
+            "$ref": "#/components/schemas/OrderStatus"
+          },
+          "canRateDriver": {
+            "type": "boolean"
+          },
+          "hasDriverRating": {
+            "type": "boolean"
+          },
+          "driverRatingOpenedBecauseDelivered": {
+            "type": "boolean"
+          },
+          "driverRatingOpenedBecauseDriverCancelled": {
+            "type": "boolean"
+          },
+          "driver": {
+            "$ref": "#/components/schemas/CustomerOrderRatingDriverInfoDto"
+          },
+          "stores": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CustomerOrderStoreRatingAvailabilityItemDto"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CustomerOrderRatingDriverInfoDto": {
+        "type": "object",
+        "properties": {
+          "driverId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fullName": {
+            "type": "string",
+            "nullable": true
+          },
+          "phoneNumber": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "CustomerOrderStoreDto": {
         "type": "object",
         "properties": {
@@ -4443,6 +4933,33 @@
               "$ref": "#/components/schemas/CustomerOrderItemDto"
             },
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CustomerOrderStoreRatingAvailabilityItemDto": {
+        "type": "object",
+        "properties": {
+          "storeId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "storeNameAr": {
+            "type": "string",
+            "nullable": true
+          },
+          "storeNameEn": {
+            "type": "string",
+            "nullable": true
+          },
+          "storeOrderStatus": {
+            "$ref": "#/components/schemas/OrderStoreStatus"
+          },
+          "canRate": {
+            "type": "boolean"
+          },
+          "hasRating": {
+            "type": "boolean"
           }
         },
         "additionalProperties": false
@@ -4536,6 +5053,40 @@
           "categoryNameEn": {
             "type": "string",
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CustomerStoreRatingDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "orderId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "storeId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "customerId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "score": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "comment": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
           }
         },
         "additionalProperties": false
@@ -4741,6 +5292,15 @@
           "deliveredAt": {
             "type": "string",
             "format": "date-time",
+            "nullable": true
+          },
+          "cancelledAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "cancelReason": {
+            "type": "string",
             "nullable": true
           },
           "stores": {
@@ -4993,6 +5553,13 @@
             "type": "boolean",
             "nullable": true
           },
+          "logoBase64": {
+            "type": "string",
+            "nullable": true
+          },
+          "hasLogo": {
+            "type": "boolean"
+          },
           "averageRating": {
             "type": "number",
             "format": "double"
@@ -5072,6 +5639,9 @@
             "type": "boolean",
             "nullable": true
           },
+          "hasLogo": {
+            "type": "boolean"
+          },
           "averageRating": {
             "type": "number",
             "format": "double"
@@ -5090,6 +5660,19 @@
           }
         },
         "additionalProperties": false
+      },
+      "StoreDayEnum": {
+        "enum": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "type": "integer",
+        "format": "int32"
       },
       "StoreDetailsDto": {
         "type": "object",
@@ -5138,6 +5721,13 @@
           "isActive": {
             "type": "boolean"
           },
+          "logoBase64": {
+            "type": "string",
+            "nullable": true
+          },
+          "hasLogo": {
+            "type": "boolean"
+          },
           "createdAt": {
             "type": "string",
             "format": "date-time"
@@ -5183,6 +5773,13 @@
           "longitude": {
             "type": "number",
             "format": "double"
+          },
+          "logoBase64": {
+            "type": "string",
+            "nullable": true
+          },
+          "hasLogo": {
+            "type": "boolean"
           }
         },
         "additionalProperties": false
@@ -5240,6 +5837,86 @@
           "updatedAt": {
             "type": "string",
             "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "TimeSpan": {
+        "type": "object",
+        "properties": {
+          "ticks": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "days": {
+            "type": "integer",
+            "format": "int32",
+            "readOnly": true
+          },
+          "hours": {
+            "type": "integer",
+            "format": "int32",
+            "readOnly": true
+          },
+          "milliseconds": {
+            "type": "integer",
+            "format": "int32",
+            "readOnly": true
+          },
+          "microseconds": {
+            "type": "integer",
+            "format": "int32",
+            "readOnly": true
+          },
+          "nanoseconds": {
+            "type": "integer",
+            "format": "int32",
+            "readOnly": true
+          },
+          "minutes": {
+            "type": "integer",
+            "format": "int32",
+            "readOnly": true
+          },
+          "seconds": {
+            "type": "integer",
+            "format": "int32",
+            "readOnly": true
+          },
+          "totalDays": {
+            "type": "number",
+            "format": "double",
+            "readOnly": true
+          },
+          "totalHours": {
+            "type": "number",
+            "format": "double",
+            "readOnly": true
+          },
+          "totalMilliseconds": {
+            "type": "number",
+            "format": "double",
+            "readOnly": true
+          },
+          "totalMicroseconds": {
+            "type": "number",
+            "format": "double",
+            "readOnly": true
+          },
+          "totalNanoseconds": {
+            "type": "number",
+            "format": "double",
+            "readOnly": true
+          },
+          "totalMinutes": {
+            "type": "number",
+            "format": "double",
+            "readOnly": true
+          },
+          "totalSeconds": {
+            "type": "number",
+            "format": "double",
+            "readOnly": true
           }
         },
         "additionalProperties": false
@@ -5467,6 +6144,13 @@
             "type": "integer",
             "format": "int32",
             "nullable": true
+          },
+          "logoBase64": {
+            "type": "string",
+            "nullable": true
+          },
+          "removeLogo": {
+            "type": "boolean"
           }
         },
         "additionalProperties": false
@@ -5551,6 +6235,37 @@
           },
           "note": {
             "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdateVendorStoreWorkingHourItemDto": {
+        "type": "object",
+        "properties": {
+          "day": {
+            "$ref": "#/components/schemas/StoreDayEnum"
+          },
+          "openTime": {
+            "$ref": "#/components/schemas/TimeSpan"
+          },
+          "closeTime": {
+            "$ref": "#/components/schemas/TimeSpan"
+          },
+          "isClosed": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdateVendorStoreWorkingHoursDto": {
+        "type": "object",
+        "properties": {
+          "workingHours": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UpdateVendorStoreWorkingHourItemDto"
+            },
             "nullable": true
           }
         },
@@ -5884,6 +6599,13 @@
           "nameEn": {
             "type": "string",
             "nullable": true
+          },
+          "hasLogo": {
+            "type": "boolean"
+          },
+          "logoBase64": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -5975,6 +6697,15 @@
           "deliveredAt": {
             "type": "string",
             "format": "date-time",
+            "nullable": true
+          },
+          "cancelledAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "cancelReason": {
+            "type": "string",
             "nullable": true
           },
           "items": {
@@ -6100,6 +6831,58 @@
           "deliveredAt": {
             "type": "string",
             "format": "date-time",
+            "nullable": true
+          },
+          "cancelledAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "cancelReason": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "VendorStoreWorkingHourItemDto": {
+        "type": "object",
+        "properties": {
+          "day": {
+            "$ref": "#/components/schemas/StoreDayEnum"
+          },
+          "openTime": {
+            "$ref": "#/components/schemas/TimeSpan"
+          },
+          "closeTime": {
+            "$ref": "#/components/schemas/TimeSpan"
+          },
+          "isClosed": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "VendorStoreWorkingHoursDto": {
+        "type": "object",
+        "properties": {
+          "storeId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "nameAr": {
+            "type": "string",
+            "nullable": true
+          },
+          "nameEn": {
+            "type": "string",
+            "nullable": true
+          },
+          "workingHours": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VendorStoreWorkingHourItemDto"
+            },
             "nullable": true
           }
         },

@@ -73,5 +73,23 @@ namespace MarcketPlace.Controllers
             var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
             return int.TryParse(userIdClaim, out var userId) ? userId : null;
         }
+        [HttpPost("{orderId:int}/cancel")]
+        public async Task<ActionResult<CustomerOrderDetailsDto>> Cancel(
+        int orderId,
+            [FromBody] CancelCustomerOrderDto dto,
+            CancellationToken cancellationToken)
+        {
+            var userId = GetCurrentUserId();
+            if (userId is null)
+                return Unauthorized();
+
+            var result = await _customerOrderService.CancelAsync(
+                userId.Value,
+                orderId,
+                dto,
+                cancellationToken);
+
+            return Ok(result);
+        }
     }
 }
