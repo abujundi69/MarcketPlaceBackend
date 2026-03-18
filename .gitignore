@@ -1,0 +1,12 @@
+bin/
+obj/
+*.log
+*.cache
+*.pdb
+*.dll
+*.exe
+.vs/bin/
+obj/
+.vs/
+**/bin/
+**/obj/
