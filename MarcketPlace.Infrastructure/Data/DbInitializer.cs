@@ -10,8 +10,8 @@ namespace MarcketPlace.Infrastructure.Data
     /// </summary>
     public static class DbInitializer
     {
-        private const string SuperAdminPhone = "+970568621748";
-        private const string SuperAdminPassword = "0568621748@@";
+        private const string SuperAdminPhone = "+970599000000";
+        private const string SuperAdminPassword = "0599000000@@";
 
         public static async Task EnsureSuperAdminExistsAsync(AppDbContext context, bool resetPasswordInDev = false, CancellationToken cancellationToken = default)
         {

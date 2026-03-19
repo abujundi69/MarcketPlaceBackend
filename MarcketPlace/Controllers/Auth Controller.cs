@@ -1,11 +1,12 @@
 ﻿using MarcketPlace.Application.Auth;
 using MarcketPlace.Application.Auth.Dtos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace MarcketPlace.Controllers
+namespace MarcketPlace.API.Controllers
 {
+    [Route("api/[controller]")]
     [ApiController]
-    [Route("api/auth")]
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
@@ -15,6 +16,17 @@ namespace MarcketPlace.Controllers
             _authService = authService;
         }
 
+        [AllowAnonymous]
+        [HttpPost("customer/register")]
+        public async Task<ActionResult<LoginResultDto>> CustomerRegister(
+            [FromBody] CustomerRegisterRequestDto dto,
+            CancellationToken cancellationToken)
+        {
+            var result = await _authService.CustomerRegisterAsync(dto, cancellationToken);
+            return Ok(result);
+        }
+
+        [AllowAnonymous]
         [HttpPost("login")]
         public async Task<ActionResult<LoginResultDto>> Login(
             [FromBody] LoginRequestDto dto,
@@ -24,12 +36,13 @@ namespace MarcketPlace.Controllers
             return Ok(result);
         }
 
-        [HttpPost("verify-first-login-otp")]
-        public async Task<ActionResult<AuthResponseDto>> VerifyFirstLoginOtp(
-            [FromBody] VerifyFirstLoginOtpRequestDto dto,
+        [AllowAnonymous]
+        [HttpPost("verify-customer-otp")]
+        public async Task<ActionResult<AuthResponseDto>> VerifyCustomerOtp(
+            [FromBody] VerifyCustomerOtpRequestDto dto,
             CancellationToken cancellationToken)
         {
-            var result = await _authService.VerifyFirstLoginOtpAsync(dto, cancellationToken);
+            var result = await _authService.VerifyCustomerOtpAsync(dto, cancellationToken);
             return Ok(result);
         }
     }

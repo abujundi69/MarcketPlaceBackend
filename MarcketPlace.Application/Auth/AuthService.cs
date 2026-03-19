@@ -3,11 +3,14 @@ using System.Security.Claims;
 using System.Text;
 using MarcketPlace.Application.Auth.Dtos;
 using MarcketPlace.Domain.Entities;
+using MarcketPlace.Domain.Enums;
 using MarcketPlace.Infrastructure.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using CustomerEntity = MarcketPlace.Domain.Entities.Customer;
+using UserEntity = MarcketPlace.Domain.Entities.User;
 
 namespace MarcketPlace.Application.Auth
 {
@@ -15,13 +18,13 @@ namespace MarcketPlace.Application.Auth
     {
         private readonly AppDbContext _context;
         private readonly IConfiguration _configuration;
-        private readonly IPasswordHasher<User> _passwordHasher;
+        private readonly IPasswordHasher<UserEntity> _passwordHasher;
         private readonly ITwilioVerifyService _twilioVerifyService;
 
         public AuthService(
             AppDbContext context,
             IConfiguration configuration,
-            IPasswordHasher<User> passwordHasher,
+            IPasswordHasher<UserEntity> passwordHasher,
             ITwilioVerifyService twilioVerifyService)
         {
             _context = context;
@@ -30,10 +33,77 @@ namespace MarcketPlace.Application.Auth
             _twilioVerifyService = twilioVerifyService;
         }
 
-        public async Task<LoginResultDto> LoginAsync(LoginRequestDto dto, CancellationToken cancellationToken = default)
+        public async Task<LoginResultDto> CustomerRegisterAsync(
+            CustomerRegisterRequestDto dto,
+            CancellationToken cancellationToken = default)
+        {
+            var fullName = dto.FullName?.Trim();
+            var phoneNumber = dto.PhoneNumber?.Trim();
+            var password = dto.Password;
+            var confirmPassword = dto.ConfirmPassword;
+
+            if (string.IsNullOrWhiteSpace(fullName))
+                throw new Exception("الاسم الكامل مطلوب.");
+
+            if (string.IsNullOrWhiteSpace(phoneNumber))
+                throw new Exception("رقم الهاتف مطلوب.");
+
+            if (string.IsNullOrWhiteSpace(password))
+                throw new Exception("كلمة المرور مطلوبة.");
+
+            if (password != confirmPassword)
+                throw new Exception("تأكيد كلمة المرور غير مطابق.");
+
+            var phoneExists = await _context.Users
+                .AnyAsync(x => x.PhoneNumber == phoneNumber, cancellationToken);
+
+            if (phoneExists)
+                throw new Exception("رقم الهاتف مستخدم مسبقًا.");
+
+            await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
+
+            var now = DateTime.UtcNow;
+
+            var user = new UserEntity
+            {
+                FullName = fullName!,
+                PhoneNumber = phoneNumber!,
+                Role = UserRole.Customer,
+                IsActive = true,
+                IsPhoneVerified = false,
+                PhoneVerifiedAtUtc = null,
+                CreatedAt = now
+            };
+
+            user.PasswordHash = _passwordHasher.HashPassword(user, password);
+
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync(cancellationToken);
+
+            var customer = new CustomerEntity
+            {
+                UserId = user.Id,
+                CreatedAt = now
+            };
+
+            _context.Customers.Add(customer);
+            await _context.SaveChangesAsync(cancellationToken);
+
+            await transaction.CommitAsync(cancellationToken);
+
+            return await StartCustomerOtpChallengeAsync(
+                user,
+                OtpPurpose.RegisterCustomer,
+                "تم إنشاء الحساب وإرسال رمز التحقق إلى رقم الهاتف.",
+                cancellationToken);
+        }
+
+        public async Task<LoginResultDto> LoginAsync(
+            LoginRequestDto dto,
+            CancellationToken cancellationToken = default)
         {
             var phoneNumber = dto.PhoneNumber?.Trim();
-            var password = dto.Password?.Trim();
+            var password = dto.Password;
 
             if (string.IsNullOrWhiteSpace(phoneNumber))
                 throw new Exception("رقم الهاتف مطلوب.");
@@ -54,35 +124,13 @@ namespace MarcketPlace.Application.Auth
             if (verifyResult == PasswordVerificationResult.Failed)
                 throw new Exception("بيانات الدخول غير صحيحة.");
 
-            if (!user.IsPhoneVerified)
+            if (user.Role == UserRole.Customer && !user.IsPhoneVerified)
             {
-                await _twilioVerifyService.SendCodeAsync(user.PhoneNumber);
-
-                var oldSessions = await _context.OtpCodes
-                    .Where(x => x.UserId == user.Id && !x.IsUsed)
-                    .ToListAsync(cancellationToken);
-
-                foreach (var s in oldSessions)
-                    s.IsUsed = true;
-
-                var otpSession = new OtpCode
-                {
-                    UserId = user.Id,
-                    PhoneNumber = user.PhoneNumber,
-                    CreatedAt = DateTime.UtcNow,
-                    ExpiresAt = DateTime.UtcNow.AddMinutes(10),
-                    IsUsed = false
-                };
-
-                _context.OtpCodes.Add(otpSession);
-                await _context.SaveChangesAsync(cancellationToken);
-
-                return new LoginResultDto
-                {
-                    RequiresOtp = true,
-                    OtpSessionId = otpSession.Id,
-                    Message = "تم إرسال رمز التحقق إلى رقم الهاتف."
-                };
+                return await StartCustomerOtpChallengeAsync(
+                    user,
+                    OtpPurpose.LoginCustomer,
+                    "تم إرسال رمز التحقق لتأكيد رقم الهاتف.",
+                    cancellationToken);
             }
 
             return new LoginResultDto
@@ -92,8 +140,8 @@ namespace MarcketPlace.Application.Auth
             };
         }
 
-        public async Task<AuthResponseDto> VerifyFirstLoginOtpAsync(
-            VerifyFirstLoginOtpRequestDto dto,
+        public async Task<AuthResponseDto> VerifyCustomerOtpAsync(
+            VerifyCustomerOtpRequestDto dto,
             CancellationToken cancellationToken = default)
         {
             if (dto.OtpSessionId <= 0)
@@ -123,21 +171,71 @@ namespace MarcketPlace.Application.Auth
             if (!user.IsActive)
                 throw new Exception("الحساب غير مفعل.");
 
+            if (user.Role != UserRole.Customer)
+                throw new Exception("التحقق بالرمز متاح للعملاء فقط.");
+
             var approved = await _twilioVerifyService.VerifyCodeAsync(otpSession.PhoneNumber, dto.Code);
             if (!approved)
                 throw new Exception("رمز التحقق غير صحيح أو منتهي.");
 
-            user.IsPhoneVerified = true;
-            user.PhoneVerifiedAtUtc = DateTime.UtcNow;
+            var now = DateTime.UtcNow;
+
+            if (!user.IsPhoneVerified)
+            {
+                user.IsPhoneVerified = true;
+                user.PhoneVerifiedAtUtc = now;
+            }
 
             otpSession.IsUsed = true;
+            otpSession.VerifiedAt = now;
 
             await _context.SaveChangesAsync(cancellationToken);
 
             return BuildAuthResponse(user);
         }
 
-        private AuthResponseDto BuildAuthResponse(User user)
+        private async Task<LoginResultDto> StartCustomerOtpChallengeAsync(
+            UserEntity user,
+            OtpPurpose purpose,
+            string message,
+            CancellationToken cancellationToken)
+        {
+            if (user.Role != UserRole.Customer)
+                throw new Exception("OTP متاح للعملاء فقط.");
+
+            await _twilioVerifyService.SendCodeAsync(user.PhoneNumber);
+
+            var oldSessions = await _context.OtpCodes
+                .Where(x => x.UserId == user.Id && !x.IsUsed)
+                .ToListAsync(cancellationToken);
+
+            foreach (var session in oldSessions)
+                session.IsUsed = true;
+
+            var now = DateTime.UtcNow;
+
+            var otpSession = new OtpCode
+            {
+                UserId = user.Id,
+                PhoneNumber = user.PhoneNumber,
+                Purpose = purpose,
+                CreatedAt = now,
+                ExpiresAt = now.AddMinutes(10),
+                IsUsed = false
+            };
+
+            _context.OtpCodes.Add(otpSession);
+            await _context.SaveChangesAsync(cancellationToken);
+
+            return new LoginResultDto
+            {
+                RequiresOtp = true,
+                OtpSessionId = otpSession.Id,
+                Message = message
+            };
+        }
+
+        private AuthResponseDto BuildAuthResponse(UserEntity user)
         {
             var expiresMinutes = int.Parse(_configuration["Jwt:ExpiresMinutes"]!);
             var expiresAt = DateTime.UtcNow.AddMinutes(expiresMinutes);
@@ -154,7 +252,7 @@ namespace MarcketPlace.Application.Auth
             };
         }
 
-        private string GenerateJwtToken(User user, DateTime expiresAt)
+        private string GenerateJwtToken(UserEntity user, DateTime expiresAt)
         {
             var key = _configuration["Jwt:Key"]!;
             var issuer = _configuration["Jwt:Issuer"]!;

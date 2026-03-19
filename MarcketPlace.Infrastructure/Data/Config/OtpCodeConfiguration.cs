@@ -1,4 +1,5 @@
 ﻿using MarcketPlace.Domain.Entities;
+using MarcketPlace.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -19,6 +20,10 @@ namespace MarcketPlace.Infrastructure.Data.Config
                    .IsUnicode(false)
                    .IsRequired();
 
+            builder.Property(x => x.Purpose)
+                   .HasConversion<int>()
+                   .IsRequired();
+
             builder.Property(x => x.ExpiresAt)
                    .HasColumnType("datetime2")
                    .IsRequired();
@@ -32,6 +37,10 @@ namespace MarcketPlace.Infrastructure.Data.Config
                    .HasDefaultValueSql("SYSUTCDATETIME()")
                    .IsRequired();
 
+            builder.Property(x => x.VerifiedAt)
+                   .HasColumnType("datetime2")
+                   .IsRequired(false);
+
             builder.HasOne<User>()
                    .WithMany()
                    .HasForeignKey(x => x.UserId)
@@ -40,6 +49,8 @@ namespace MarcketPlace.Infrastructure.Data.Config
             builder.HasIndex(x => x.PhoneNumber);
 
             builder.HasIndex(x => new { x.UserId, x.IsUsed });
+
+            builder.HasIndex(x => new { x.UserId, x.Purpose, x.IsUsed });
 
             builder.ToTable("OtpCodes");
         }

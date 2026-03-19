@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace MarcketPlace.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -206,9 +206,11 @@ namespace MarcketPlace.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<int>(type: "int", nullable: false),
                     PhoneNumber = table.Column<string>(type: "varchar(20)", unicode: false, maxLength: 20, nullable: false),
+                    Purpose = table.Column<int>(type: "int", nullable: false),
                     ExpiresAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsUsed = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "SYSUTCDATETIME()")
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "SYSUTCDATETIME()"),
+                    VerifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -788,11 +790,6 @@ namespace MarcketPlace.Infrastructure.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
-            migrationBuilder.InsertData(
-                table: "Users",
-                columns: new[] { "Id", "CreatedAt", "FullName", "IsActive", "PasswordHash", "PhoneNumber", "PhoneVerifiedAtUtc", "Role", "UpdatedAt" },
-                values: new object[] { 1, new DateTime(2026, 3, 9, 0, 0, 0, 0, DateTimeKind.Utc), "Super Admin", true, "AQAAAAIAAYagAAAAEAARIjNEVWZ3iJmqu8zd7v9/ZpZ17wzvNtmMEZEJm816r8vP72BtUCc6/zuVpvvZPg==", "+970568621748", null, "SuperAdmin", null });
-
             migrationBuilder.CreateIndex(
                 name: "IX_CartItems_CustomerId_ProductId_ProductVariantId",
                 table: "CartItems",
@@ -950,6 +947,11 @@ namespace MarcketPlace.Infrastructure.Migrations
                 name: "IX_OtpCodes_UserId_IsUsed",
                 table: "OtpCodes",
                 columns: new[] { "UserId", "IsUsed" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OtpCodes_UserId_Purpose_IsUsed",
+                table: "OtpCodes",
+                columns: new[] { "UserId", "Purpose", "IsUsed" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_ProductOptions_ProductId",

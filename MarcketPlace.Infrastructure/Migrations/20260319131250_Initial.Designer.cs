@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MarcketPlace.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260318121239_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20260319131250_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -655,14 +655,22 @@ namespace MarcketPlace.Infrastructure.Migrations
                         .IsUnicode(false)
                         .HasColumnType("varchar(20)");
 
+                    b.Property<int>("Purpose")
+                        .HasColumnType("int");
+
                     b.Property<int>("UserId")
                         .HasColumnType("int");
+
+                    b.Property<DateTime?>("VerifiedAt")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
                     b.HasIndex("PhoneNumber");
 
                     b.HasIndex("UserId", "IsUsed");
+
+                    b.HasIndex("UserId", "Purpose", "IsUsed");
 
                     b.ToTable("OtpCodes", (string)null);
                 });
@@ -1462,19 +1470,6 @@ namespace MarcketPlace.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("Users", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CreatedAt = new DateTime(2026, 3, 9, 0, 0, 0, 0, DateTimeKind.Utc),
-                            FullName = "Super Admin",
-                            IsActive = true,
-                            IsPhoneVerified = false,
-                            PasswordHash = "AQAAAAIAAYagAAAAEAARIjNEVWZ3iJmqu8zd7v9/ZpZ17wzvNtmMEZEJm816r8vP72BtUCc6/zuVpvvZPg==",
-                            PhoneNumber = "+970568621748",
-                            Role = "SuperAdmin"
-                        });
                 });
 
             modelBuilder.Entity("MarcketPlace.Domain.Entities.Vendor", b =>
