@@ -15,5 +15,17 @@ namespace MarcketPlace.Application.Auth
         Task<AuthResponseDto> VerifyCustomerOtpAsync(
             VerifyCustomerOtpRequestDto dto,
             CancellationToken cancellationToken = default);
+
+        Task<LoginResultDto> ForgotPasswordAsync(
+            ForgotPasswordRequestDto dto,
+            CancellationToken cancellationToken = default);
+
+        Task<VerifyForgotPasswordOtpResultDto> VerifyForgotPasswordOtpAsync(
+            VerifyForgotPasswordOtpRequestDto dto,
+            CancellationToken cancellationToken = default);
+
+        Task<MessageResultDto> ResetForgotPasswordAsync(
+            ResetForgotPasswordRequestDto dto,
+            CancellationToken cancellationToken = default);
     }
 }

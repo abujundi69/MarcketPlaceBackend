@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MarcketPlace.Application")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9415c456875b0d7e2a6f2ea1f404b4980e997f38")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7bc25e885ae2e24ff6da591bf34ef6841b45f53b")]
 [assembly: System.Reflection.AssemblyProductAttribute("MarcketPlace.Application")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MarcketPlace.Application")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
