@@ -7,11 +7,15 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Collections.Generic;
 using System.Security.Claims;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddJsonFile("appsettings.Local.json", optional: true, reloadOnChange: true);
+
+var corsAllowedHosts = builder.Configuration.GetSection("Cors:AllowedHosts").Get<string[]>() ?? [];
+var corsAllowedHostSet = new HashSet<string>(corsAllowedHosts, StringComparer.OrdinalIgnoreCase);
 
 builder.Services.AddControllers();
 builder.Services.AddHttpContextAccessor();
@@ -23,7 +27,7 @@ builder.Services.AddScoped<ITwilioVerifyService, TwilioVerifyService>();
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowLocalhost", policy =>
+    options.AddPolicy("MarcketPlaceCors", policy =>
     {
         policy.SetIsOriginAllowed(origin =>
         {
@@ -31,7 +35,8 @@ builder.Services.AddCors(options =>
             try
             {
                 var uri = new Uri(origin);
-                return uri.Host is "localhost" or "127.0.0.1";
+                if (uri.Host is "localhost" or "127.0.0.1") return true;
+                return corsAllowedHostSet.Contains(uri.Host);
             }
             catch { return false; }
         })
@@ -120,7 +125,7 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-app.UseCors("AllowLocalhost");
+app.UseCors("MarcketPlaceCors");
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
