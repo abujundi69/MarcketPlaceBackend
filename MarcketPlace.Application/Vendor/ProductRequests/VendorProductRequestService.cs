@@ -9,7 +9,7 @@ namespace MarcketPlace.Application.Vendor.ProductRequests
 {
     public class VendorProductRequestService : IVendorProductRequestService
     {
-        private const string SystemStoreNameAr = "مستودع نبض المدينة";
+        private const string SystemStoreNameAr = "مستودع زاد";
 
         private readonly AppDbContext _context;
         private readonly IAdminNotificationService _notificationService;

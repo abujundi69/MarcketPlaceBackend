@@ -22,10 +22,10 @@ BEGIN
         UpdatedAt
     )
     VALUES (
-        N'نبض المدينة',
-        N'City Pulse',
-        N'© نبض المدينة - جميع الحقوق محفوظة',
-        N'© City Pulse - All rights reserved',
+        N'زاد',
+        N'Zad',
+        N'© زاد - جميع الحقوق محفوظة',
+        N'© Zad - All rights reserved',
         NULL,
         NULL,
         N'المستودع الرئيسي',

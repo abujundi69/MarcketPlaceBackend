@@ -13,6 +13,18 @@ namespace MarcketPlace.Infrastructure.Data
         private const string SuperAdminPhone = "+970599000000";
         private const string SuperAdminPassword = "0599000000@@";
 
+        private const string DefaultSystemNameAr = "زاد";
+        private const string DefaultSystemNameEn = "Zad";
+        private const string DefaultFooterAr = "© زاد - جميع الحقوق محفوظة";
+        private const string DefaultFooterEn = "© Zad - All rights reserved";
+
+        private const string SystemWarehouseNameAr = "مستودع زاد";
+        private const string SystemWarehouseNameEn = "Zad Warehouse";
+        private const string LegacySystemWarehouseNameAr = "مستودع نبض المدينة";
+
+        private const string LegacySystemNameAr = "نبض المدينة";
+        private const string LegacySystemNameEn = "City Pulse";
+
         public static async Task EnsureSuperAdminExistsAsync(AppDbContext context, bool resetPasswordInDev = false, CancellationToken cancellationToken = default)
         {
             var user = await context.Users
@@ -43,21 +55,33 @@ namespace MarcketPlace.Infrastructure.Data
         }
 
         /// <summary>
-        /// متجر افتراضي واحد "مستودع نبض المدينة" يُستخدم لطلبات المنتجات من التجار.
+        /// متجر افتراضي واحد للمستودع المركزي؛ يُستخدم لطلبات المنتجات من التجار.
         /// </summary>
         public static async Task EnsureSystemStoreExistsAsync(AppDbContext context, CancellationToken cancellationToken = default)
         {
-            var exists = await context.Stores
-                .AnyAsync(x => x.VendorId == null && x.NameAr == "مستودع نبض المدينة", cancellationToken);
+            var current = await context.Stores
+                .FirstOrDefaultAsync(x => x.VendorId == null && x.NameAr == SystemWarehouseNameAr, cancellationToken);
 
-            if (exists)
+            if (current is not null)
                 return;
+
+            var legacy = await context.Stores
+                .FirstOrDefaultAsync(x => x.VendorId == null && x.NameAr == LegacySystemWarehouseNameAr, cancellationToken);
+
+            if (legacy is not null)
+            {
+                legacy.NameAr = SystemWarehouseNameAr;
+                legacy.NameEn = SystemWarehouseNameEn;
+                legacy.UpdatedAt = DateTime.UtcNow;
+                await context.SaveChangesAsync(cancellationToken);
+                return;
+            }
 
             var store = new Store
             {
                 VendorId = null,
-                NameAr = "مستودع نبض المدينة",
-                NameEn = "Nabd City Warehouse",
+                NameAr = SystemWarehouseNameAr,
+                NameEn = SystemWarehouseNameEn,
                 DescriptionAr = "المستودع المركزي",
                 DescriptionEn = "Central Warehouse",
                 PhoneNumber = "0599000000",
@@ -110,10 +134,10 @@ namespace MarcketPlace.Infrastructure.Data
             {
                 var newSetting = new SystemSetting
                 {
-                    SystemNameAr = "نبض المدينة",
-                    SystemNameEn = "City Pulse",
-                    FooterAr = "© نبض المدينة - جميع الحقوق محفوظة",
-                    FooterEn = "© City Pulse - All rights reserved",
+                    SystemNameAr = DefaultSystemNameAr,
+                    SystemNameEn = DefaultSystemNameEn,
+                    FooterAr = DefaultFooterAr,
+                    FooterEn = DefaultFooterEn,
                     PickupNameAr = "المستودع الرئيسي",
                     PickupNameEn = "Main Warehouse",
                     PickupAddressText = "الموقع الافتراضي",
@@ -133,13 +157,22 @@ namespace MarcketPlace.Infrastructure.Data
 
             if (needsFix)
             {
-                setting.SystemNameAr = "نبض المدينة";
-                setting.SystemNameEn = "City Pulse";
-                setting.FooterAr = "© نبض المدينة - جميع الحقوق محفوظة";
-                setting.FooterEn = "© City Pulse - All rights reserved";
+                setting.SystemNameAr = DefaultSystemNameAr;
+                setting.SystemNameEn = DefaultSystemNameEn;
+                setting.FooterAr = DefaultFooterAr;
+                setting.FooterEn = DefaultFooterEn;
                 setting.PickupNameAr = "المستودع الرئيسي";
                 setting.PickupNameEn = "Main Warehouse";
                 setting.PickupAddressText = "الموقع الافتراضي";
+                setting.UpdatedAt = DateTime.UtcNow;
+                await context.SaveChangesAsync(cancellationToken);
+            }
+            else if (setting.SystemNameAr == LegacySystemNameAr || setting.SystemNameEn == LegacySystemNameEn)
+            {
+                setting.SystemNameAr = DefaultSystemNameAr;
+                setting.SystemNameEn = DefaultSystemNameEn;
+                setting.FooterAr = DefaultFooterAr;
+                setting.FooterEn = DefaultFooterEn;
                 setting.UpdatedAt = DateTime.UtcNow;
                 await context.SaveChangesAsync(cancellationToken);
             }

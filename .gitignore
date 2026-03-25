@@ -10,3 +10,8 @@ obj/
 .vs/
 **/bin/
 **/obj/
+
+_temp_build_api/
+
+# Local secrets — copy appsettings.Local.example.json to appsettings.Local.json
+**/appsettings.Local.json
