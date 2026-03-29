@@ -1,7 +1,8 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using MarcketPlace.Application.Auth.Dtos;
+using MarcketPlace.Application.Common;
 using MarcketPlace.Domain.Entities;
 using MarcketPlace.Domain.Enums;
 using MarcketPlace.Infrastructure.Data;
@@ -60,8 +61,9 @@ namespace MarcketPlace.Application.Auth
             if (password != confirmPassword)
                 throw new Exception("تأكيد كلمة المرور غير مطابق.");
 
+            var phoneCandidates = PhoneNumberLookup.BuildCandidates(phoneNumber);
             var phoneExists = await _context.Users
-                .AnyAsync(x => x.PhoneNumber == phoneNumber, cancellationToken);
+                .AnyAsync(x => phoneCandidates.Contains(x.PhoneNumber), cancellationToken);
 
             if (phoneExists)
                 throw new Exception("رقم الهاتف مستخدم مسبقًا.");
@@ -112,23 +114,24 @@ namespace MarcketPlace.Application.Auth
             var password = dto.Password;
 
             if (string.IsNullOrWhiteSpace(phoneNumber))
-                throw new Exception("رقم الهاتف مطلوب.");
+                throw new InvalidOperationException("رقم الهاتف مطلوب.");
 
             if (string.IsNullOrWhiteSpace(password))
-                throw new Exception("كلمة المرور مطلوبة.");
+                throw new InvalidOperationException("كلمة المرور مطلوبة.");
 
+            var phoneCandidates = PhoneNumberLookup.BuildCandidates(phoneNumber);
             var user = await _context.Users
-                .FirstOrDefaultAsync(x => x.PhoneNumber == phoneNumber, cancellationToken);
+                .FirstOrDefaultAsync(x => phoneCandidates.Contains(x.PhoneNumber), cancellationToken);
 
             if (user is null)
-                throw new Exception("بيانات الدخول غير صحيحة.");
+                throw new InvalidOperationException("بيانات الدخول غير صحيحة.");
 
             if (!user.IsActive)
-                throw new Exception("الحساب غير مفعل.");
+                throw new InvalidOperationException("الحساب غير مفعل.");
 
             var verifyResult = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, password);
             if (verifyResult == PasswordVerificationResult.Failed)
-                throw new Exception("بيانات الدخول غير صحيحة.");
+                throw new InvalidOperationException("بيانات الدخول غير صحيحة.");
 
             if (user.Role == UserRole.Customer && !user.IsPhoneVerified)
             {
@@ -220,8 +223,9 @@ namespace MarcketPlace.Application.Auth
             if (string.IsNullOrWhiteSpace(phoneNumber))
                 throw new Exception("رقم الهاتف مطلوب.");
 
+            var phoneCandidates = PhoneNumberLookup.BuildCandidates(phoneNumber);
             var user = await _context.Users
-                .FirstOrDefaultAsync(x => x.PhoneNumber == phoneNumber, cancellationToken);
+                .FirstOrDefaultAsync(x => phoneCandidates.Contains(x.PhoneNumber), cancellationToken);
 
             if (user is null)
                 throw new Exception("لا يوجد حساب مرتبط بهذا الرقم.");

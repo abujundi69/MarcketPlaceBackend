@@ -1,4 +1,5 @@
 using MarcketPlace.Application.Admin.Vendors.Dtos;
+using MarcketPlace.Application.Common;
 using MarcketPlace.Domain.Entities;
 using MarcketPlace.Domain.Enums;
 using MarcketPlace.Infrastructure.Data;
@@ -82,8 +83,9 @@ namespace MarcketPlace.Application.Admin.Vendors
             ValidateCreateOrUpdate(dto.FullName, dto.PhoneNumber);
 
             var phoneNumber = dto.PhoneNumber.Trim();
+            var phoneCandidates = PhoneNumberLookup.BuildCandidates(phoneNumber);
             var phoneExists = await _context.Users
-                .AnyAsync(x => x.PhoneNumber == phoneNumber, cancellationToken);
+                .AnyAsync(x => phoneCandidates.Contains(x.PhoneNumber), cancellationToken);
 
             if (phoneExists)
                 throw new InvalidOperationException("رقم الهاتف مستخدم مسبقًا.");
@@ -131,8 +133,9 @@ namespace MarcketPlace.Application.Admin.Vendors
                 ?? throw new KeyNotFoundException("التاجر غير موجود.");
 
             var phoneNumber = dto.PhoneNumber.Trim();
+            var phoneCandidates = PhoneNumberLookup.BuildCandidates(phoneNumber);
             var phoneExists = await _context.Users
-                .AnyAsync(x => x.PhoneNumber == phoneNumber && x.Id != vendor.UserId, cancellationToken);
+                .AnyAsync(x => phoneCandidates.Contains(x.PhoneNumber) && x.Id != vendor.UserId, cancellationToken);
 
             if (phoneExists)
                 throw new InvalidOperationException("رقم الهاتف مستخدم من قبل مستخدم آخر.");

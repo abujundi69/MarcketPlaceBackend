@@ -1,4 +1,5 @@
-﻿using MarcketPlace.Application.Admin.Drivers.Dtos;
+using MarcketPlace.Application.Admin.Drivers.Dtos;
+using MarcketPlace.Application.Common;
 using MarcketPlace.Domain.Entities;
 using MarcketPlace.Domain.Enums;
 using MarcketPlace.Infrastructure.Data;
@@ -72,8 +73,9 @@ namespace MarcketPlace.Application.Admin.Drivers
             var phoneNumber = dto.PhoneNumber.Trim();
             var vehicleNumber = dto.VehicleNumber.Trim();
 
+            var phoneCandidates = PhoneNumberLookup.BuildCandidates(phoneNumber);
             var phoneExists = await _context.Users
-                .AnyAsync(x => x.PhoneNumber == phoneNumber, cancellationToken);
+                .AnyAsync(x => phoneCandidates.Contains(x.PhoneNumber), cancellationToken);
 
             if (phoneExists)
                 throw new InvalidOperationException("رقم الهاتف مستخدم مسبقًا.");
@@ -132,8 +134,9 @@ namespace MarcketPlace.Application.Admin.Drivers
             var phoneNumber = dto.PhoneNumber.Trim();
             var vehicleNumber = dto.VehicleNumber.Trim();
 
+            var phoneCandidates = PhoneNumberLookup.BuildCandidates(phoneNumber);
             var phoneExists = await _context.Users
-                .AnyAsync(x => x.PhoneNumber == phoneNumber && x.Id != driver.UserId, cancellationToken);
+                .AnyAsync(x => phoneCandidates.Contains(x.PhoneNumber) && x.Id != driver.UserId, cancellationToken);
 
             if (phoneExists)
                 throw new InvalidOperationException("رقم الهاتف مستخدم مسبقًا.");
