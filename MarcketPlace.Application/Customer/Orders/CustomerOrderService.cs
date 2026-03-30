@@ -517,6 +517,8 @@ namespace MarcketPlace.Application.Customer.Orders
                 DriverId = order.DriverId,
                 DriverName = order.Driver?.User.FullName,
                 DriverPhoneNumber = order.Driver?.User.PhoneNumber,
+                DriverVehicleType = order.Driver?.VehicleType,
+                DriverVehicleNumber = order.Driver?.VehicleNumber,
 
                 CustomerNote = order.CustomerNote,
 

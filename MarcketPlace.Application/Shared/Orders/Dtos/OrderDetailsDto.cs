@@ -16,6 +16,10 @@ namespace MarcketPlace.Application.Shared.Orders.Dtos
         public int? DriverId { get; set; }
         public string? DriverName { get; set; }
         public string? DriverPhoneNumber { get; set; }
+        /// <summary>نوع أو موديل المركبة (من جدول Drivers).</summary>
+        public string? DriverVehicleType { get; set; }
+        /// <summary>رقم لوحة المركبة.</summary>
+        public string? DriverVehicleNumber { get; set; }
 
         public string? CustomerNote { get; set; }
 
